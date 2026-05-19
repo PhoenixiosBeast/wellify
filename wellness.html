@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Wellify — Suivi Bien-être</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080810;
+  --surface: #111118;
+  --surface2: #1a1a24;
+  --surface3: #22222f;
+  --accent: #6ee7b7;
+  --accent2: #f59e0b;
+  --accent3: #818cf8;
+  --accent4: #f472b6;
+  --text: #f0f0f8;
+  --muted: #5b5b70;
+  --border: rgba(255,255,255,0.06);
+  --cal: #f97316;
+  --sport: #6ee7b7;
+  --water: #38bdf8;
+  --weight: #a78bfa;
+  --sleep: #f472b6;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 90px;
+  overflow-x: hidden;
+}
+
+/* TAB SYSTEM */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* HEADER */
+header {
+  padding: 44px 20px 16px;
+  background: linear-gradient(180deg, rgba(110,231,183,0.04) 0%, transparent 100%);
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.app-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.date-pill {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.greeting {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+/* SCORE CARD */
+.score-card {
+  margin: 16px 20px;
+  background: linear-gradient(135deg, rgba(110,231,183,0.12), rgba(129,140,248,0.08));
+  border: 1px solid rgba(110,231,183,0.2);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.score-ring {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.score-ring svg { transform: rotate(-90deg); }
+.ring-bg2 { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 5; }
+.ring-prog2 {
+  fill: none;
+  stroke: url(#scoreGrad);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 207;
+  stroke-dashoffset: 207;
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+
+.score-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.score-label { font-size: 9px; color: var(--muted); text-transform: uppercase; }
+
+.score-info { flex: 1; }
+.score-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.score-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+/* QUICK STATS */
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 0 20px;
+  margin-bottom: 16px;
+}
+
+.quick-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.quick-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: 16px 16px 0 0;
+}
+
+.quick-card.cal::after { background: var(--cal); }
+.quick-card.sport::after { background: var(--sport); }
+.quick-card.water::after { background: var(--water); }
+.quick-card.weight::after { background: var(--weight); }
+.quick-card.sleep::after { background: var(--sleep); }
+
+.quick-card:active { transform: scale(0.97); }
+
+.quick-icon { font-size: 24px; margin-bottom: 8px; }
+.quick-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.quick-unit { font-size: 11px; color: var(--muted); }
+.quick-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+.quick-bar {
+  height: 3px;
+  background: var(--surface2);
+  border-radius: 2px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.quick-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* SECTION */
+.section {
+  padding: 0 20px;
+  margin-bottom: 20px;
+}
+
+.section-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* INPUT CARDS */
+.input-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+.input-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.input-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.input-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.input-card-sub { font-size: 12px; color: var(--muted); }
+
+.row-inputs { display: flex; gap: 8px; }
+
+.inp {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+
+.inp:focus { border-color: var(--accent); }
+.inp::placeholder { color: var(--muted); }
+
+select.inp { cursor: pointer; }
+
+.btn-add {
+  padding: 11px 18px;
+  border-radius: 10px;
+  border: none;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-add:active { transform: scale(0.95); }
+
+/* LOG LIST */
+.log-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+
+.log-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--surface2);
+  border-radius: 10px;
+  font-size: 13px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+.log-left { display: flex; align-items: center; gap: 8px; }
+.log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.log-name { font-weight: 500; }
+.log-time { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.log-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; }
+.log-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 4px; }
+
+/* WATER BUTTONS */
+.water-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.water-btn {
+  flex: 1;
+  min-width: 60px;
+  padding: 10px 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.water-btn:active { background: var(--water); border-color: var(--water); transform: scale(0.95); }
+
+/* WATER VISUAL */
+.water-visual {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.water-drop {
+  font-size: 22px;
+  transition: all 0.3s;
+  opacity: 0.2;
+}
+
+.water-drop.filled { opacity: 1; }
+
+/* SLEEP SLIDER */
+.sleep-row { display: flex; align-items: center; gap: 12px; }
+
+.slider {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface2);
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--sleep);
+  cursor: pointer;
+}
+
+.sleep-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--sleep);
+  min-width: 40px;
+  text-align: right;
+}
+
+/* WEIGHT CHART */
+.mini-chart {
+  height: 60px;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.chart-bar {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+  transition: height 0.4s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+
+.chart-bar-label {
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(8,8,16,0.92);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  padding: 10px 20px 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.35;
+  transition: opacity 0.2s;
+  padding: 4px 12px;
+}
+
+.nav-btn.active { opacity: 1; }
+.nav-btn-icon { font-size: 22px; }
+.nav-btn-label { font-size: 10px; color: var(--text); font-weight: 500; letter-spacing: 0.04em; }
+
+/* STATS PAGE */
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stat-mini {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+}
+
+.stat-mini-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-mini-label { font-size: 10px; color: var(--muted); }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--accent);
+  color: #001a10;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  z-index: 999;
+  opacity: 0;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Goal indicator */
+.goal-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Ajouté !</div>
+
+<!-- TAB: ACCUEIL -->
+<div class="tab-content active" id="tab-home">
+
+<header>
+  <div class="header-row">
+    <div class="app-title">Wellify</div>
+    <div class="date-pill" id="dateDisplay"></div>
+  </div>
+  <div class="greeting" id="greeting"></div>
+</header>
+
+<div class="score-card">
+  <div class="score-ring">
+    <svg width="80" height="80" viewBox="0 0 80 80">
+      <defs>
+        <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#6ee7b7"/>
+          <stop offset="100%" style="stop-color:#818cf8"/>
+        </linearGradient>
+      </defs>
+      <circle class="ring-bg2" cx="40" cy="40" r="33"/>
+      <circle class="ring-prog2" id="scoreRing" cx="40" cy="40" r="33"/>
+    </svg>
+    <div class="score-center">
+      <div class="score-num" id="scoreNum">0</div>
+      <div class="score-label">Score</div>
+    </div>
+  </div>
+  <div class="score-info">
+    <div class="score-title" id="scoreTitle">Bonne journée !</div>
+    <div class="score-sub" id="scoreSub">Commence à tracker tes activités</div>
+  </div>
+</div>
+
+<div class="quick-grid">
+  <div class="quick-card cal" onclick="switchTab('calories')">
+    <div class="quick-icon">🔥</div>
+    <div class="quick-value"><span id="qs-cal">0</span></div>
+    <div class="quick-unit">/ <span id="qs-cal-goal">2000</span> kcal</div>
+    <div class="quick-label">Calories</div>
+    <div class="quick-bar"><div class="quick-bar-fill" id="bar-cal" style="background:var(--cal);width:0%"></div></div>
+  </div>
+  <div class="quick-card sport" onclick="switchTab('sport')">
+    <div class="quick-icon">💪</div>
+    <div class="quick-value"><span id="qs-sport">0</span></div>
+    <div class="quick-unit">min d'activité</div>
+    <div class="quick-label">Sport</div>
+    <div class="quick-bar"><div class="quick-bar-fill" id="bar-sport" style="background:var(--sport);width:0%"></div></div>
+  </div>
+  <div class="quick-card water" onclick="switchTab('water')">
+    <div class="quick-icon">💧</div>
+    <div class="quick-value"><span id="qs-water">0</span></div>
+    <div class="quick-unit">/ <span id="qs-water-goal">8</span> verres</div>
+    <div class="quick-label">Hydratation</div>
+    <div class="quick-bar"><div class="quick-bar-fill" id="bar-water" style="background:var(--water);width:0%"></div></div>
+  </div>
+  <div class="quick-card sleep" onclick="switchTab('sleep')">
+    <div class="quick-icon">😴</div>
+    <div class="quick-value"><span id="qs-sleep">-</span></div>
+    <div class="quick-unit">heures de sommeil</div>
+    <div class="quick-label">Sommeil</div>
+    <div class="quick-bar"><div class="quick-bar-fill" id="bar-sleep" style="background:var(--sleep);width:0%"></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-hd"><div class="section-title">Activité récente</div></div>
+  <div id="recent-list">
+    <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Aucune activité aujourd'hui</div>
+  </div>
+</div>
+
+</div>
+
+<!-- TAB: CALORIES -->
+<div class="tab-content" id="tab-calories">
+<header>
+  <div class="header-row">
+    <div class="app-title" style="font-size:20px">🔥 Calories</div>
+    <div class="date-pill" id="cal-date"></div>
+  </div>
+</header>
+
+<div class="section">
+  <!-- Big display -->
+  <div style="text-align:center;padding:16px 0 24px;">
+    <div style="font-family:'Syne',sans-serif;font-size:56px;font-weight:800;color:var(--cal);line-height:1" id="cal-total">0</div>
+    <div style="font-size:14px;color:var(--muted)">kcal aujourd'hui</div>
+    <div style="margin-top:12px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;">
+      <div id="cal-prog-bar" style="height:100%;background:var(--cal);border-radius:3px;width:0%;transition:width 0.5s ease;"></div>
+    </div>
+    <div class="goal-row">
+      <span>0</span>
+      <span id="cal-goal-label">Objectif: 2000 kcal</span>
+      <span id="cal-remaining">2000 restantes</span>
+    </div>
+  </div>
+
+  <div class="input-card">
+    <div class="input-card-header">
+      <div class="input-card-icon" style="background:rgba(249,115,22,0.15)">🍽️</div>
+      <div>
+        <div class="input-card-title">Ajouter un repas</div>
+        <div class="input-card-sub">Nom + calories estimées</div>
+      </div>
+    </div>
+    <div class="row-inputs" style="margin-bottom:8px">
+      <input class="inp" id="cal-name" placeholder="Ex: Poulet riz..." style="flex:2">
+      <input class="inp" id="cal-kcal" type="number" placeholder="kcal" style="flex:1">
+    </div>
+    <div class="row-inputs">
+      <select class="inp" id="cal-type">
+        <option>Petit-déjeuner</option>
+        <option>Déjeuner</option>
+        <option>Dîner</option>
+        <option>Collation</option>
+      </select>
+      <button class="btn-add" onclick="addCal()" style="background:var(--cal);color:white">Ajouter</button>
+    </div>
+  </div>
+
+  <div class="log-list" id="cal-log"></div>
+</div>
+</div>
+
+<!-- TAB: SPORT -->
+<div class="tab-content" id="tab-sport">
+<header>
+  <div class="header-row">
+    <div class="app-title" style="font-size:20px">💪 Sport</div>
+    <div class="date-pill"></div>
+  </div>
+</header>
+
+<div class="section">
+  <div style="text-align:center;padding:16px 0 24px;">
+    <div style="font-family:'Syne',sans-serif;font-size:56px;font-weight:800;color:var(--sport);line-height:1" id="sport-total">0</div>
+    <div style="font-size:14px;color:var(--muted)">minutes d'activité</div>
+    <div style="margin-top:8px;font-size:13px;color:var(--muted)">🔥 <span id="sport-kcal-burned">0</span> kcal brûlées</div>
+  </div>
+
+  <div class="input-card">
+    <div class="input-card-header">
+      <div class="input-card-icon" style="background:rgba(110,231,183,0.15)">🏋️</div>
+      <div>
+        <div class="input-card-title">Ajouter une séance</div>
+        <div class="input-card-sub">Type + durée</div>
+      </div>
+    </div>
+    <div class="row-inputs" style="margin-bottom:8px">
+      <select class="inp" id="sport-type">
+        <option>🏃 Course</option>
+        <option>🏋️ Musculation</option>
+        <option>🚴 Vélo</option>
+        <option>🧘 Yoga</option>
+        <option>🏊 Natation</option>
+        <option>⚽ Football</option>
+        <option>🥊 Boxe</option>
+        <option>🚶 Marche</option>
+        <option>Autre</option>
+      </select>
+      <input class="inp" id="sport-min" type="number" placeholder="min" style="flex:0.6">
+    </div>
+    <button class="btn-add" onclick="addSport()" style="background:var(--sport);color:#001a10;width:100%">Ajouter la séance</button>
+  </div>
+
+  <div class="log-list" id="sport-log"></div>
+</div>
+</div>
+
+<!-- TAB: EAU -->
+<div class="tab-content" id="tab-water">
+<header>
+  <div class="header-row">
+    <div class="app-title" style="font-size:20px">💧 Hydratation</div>
+  </div>
+</header>
+
+<div class="section">
+  <div style="text-align:center;padding:16px 0;">
+    <div style="font-family:'Syne',sans-serif;font-size:72px;font-weight:800;color:var(--water);line-height:1" id="water-count">0</div>
+    <div style="font-size:14px;color:var(--muted)">verres sur <span id="water-goal-disp">8</span></div>
+    <div style="margin-top:12px;font-size:13px;color:var(--muted)" id="water-ml">0 ml</div>
+  </div>
+
+  <div class="water-visual" id="water-drops"></div>
+
+  <div style="margin-top:20px">
+    <div class="section-title" style="margin-bottom:12px">Ajouter</div>
+    <div class="water-btns">
+      <div class="water-btn" onclick="addWater(1)">+1 🥛<br><span style="font-size:10px;opacity:0.6">250ml</span></div>
+      <div class="water-btn" onclick="addWater(2)">+2 🥤<br><span style="font-size:10px;opacity:0.6">500ml</span></div>
+      <div class="water-btn" onclick="addWater(4)">+4 🍶<br><span style="font-size:10px;opacity:0.6">1L</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:20px">
+    <div class="section-title" style="margin-bottom:10px">Objectif quotidien</div>
+    <div class="row-inputs">
+      <input class="inp" id="water-goal-inp" type="number" placeholder="8" value="8">
+      <button class="btn-add" onclick="setWaterGoal()" style="background:var(--water);color:#001020">Définir</button>
+    </div>
+  </div>
+
+  <button onclick="resetWater()" style="margin-top:16px;width:100%;background:none;border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--muted);font-family:'DM Sans',sans-serif;cursor:pointer;font-size:13px;">Réinitialiser aujourd'hui</button>
+</div>
+</div>
+
+<!-- TAB: SOMMEIL -->
+<div class="tab-content" id="tab-sleep">
+<header>
+  <div class="header-row">
+    <div class="app-title" style="font-size:20px">😴 Sommeil</div>
+  </div>
+</header>
+
+<div class="section">
+  <div style="text-align:center;padding:16px 0 24px;">
+    <div style="font-family:'Syne',sans-serif;font-size:72px;font-weight:800;color:var(--sleep);line-height:1" id="sleep-display">-</div>
+    <div style="font-size:14px;color:var(--muted)">heures cette nuit</div>
+    <div style="margin-top:8px;font-size:13px;" id="sleep-quality-disp"></div>
+  </div>
+
+  <div class="input-card">
+    <div class="input-card-header">
+      <div class="input-card-icon" style="background:rgba(244,114,182,0.15)">🌙</div>
+      <div>
+        <div class="input-card-title">Enregistrer le sommeil</div>
+        <div class="input-card-sub">Glisse pour ajuster</div>
+      </div>
+    </div>
+    <div class="sleep-row">
+      <input type="range" class="slider" id="sleep-slider" min="1" max="12" step="0.5" value="7" oninput="updateSleepSlider()">
+      <div class="sleep-val" id="sleep-slider-val">7h</div>
+    </div>
+    <div style="text-align:center;margin-top:8px;font-size:20px" id="sleep-emoji-display">😊</div>
+    <button class="btn-add" onclick="saveSleep()" style="background:var(--sleep);color:white;width:100%;margin-top:14px">Enregistrer</button>
+  </div>
+
+  <div class="section-hd" style="margin-top:16px"><div class="section-title">Historique</div></div>
+  <div class="log-list" id="sleep-log"></div>
+</div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn active" onclick="switchTab('home')">
+    <div class="nav-btn-icon">🏠</div>
+    <div class="nav-btn-label">Accueil</div>
+  </button>
+  <button class="nav-btn" onclick="switchTab('calories')">
+    <div class="nav-btn-icon">🔥</div>
+    <div class="nav-btn-label">Calories</div>
+  </button>
+  <button class="nav-btn" onclick="switchTab('sport')">
+    <div class="nav-btn-icon">💪</div>
+    <div class="nav-btn-label">Sport</div>
+  </button>
+  <button class="nav-btn" onclick="switchTab('water')">
+    <div class="nav-btn-icon">💧</div>
+    <div class="nav-btn-label">Eau</div>
+  </button>
+  <button class="nav-btn" onclick="switchTab('sleep')">
+    <div class="nav-btn-icon">😴</div>
+    <div class="nav-btn-label">Sommeil</div>
+  </button>
+</div>
+
+<script>
+// STATE
+let state = JSON.parse(localStorage.getItem('wellify') || '{}');
+const todayKey = new Date().toISOString().split('T')[0];
+
+function getToday() {
+  if (!state[todayKey]) state[todayKey] = { cal: [], sport: [], water: 0, sleep: null };
+  return state[todayKey];
+}
+
+function save() { localStorage.setItem('wellify', JSON.stringify(state)); }
+
+// INIT
+function init() {
+  const now = new Date();
+  const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
+  const dateStr = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}`;
+  document.querySelectorAll('#dateDisplay, #cal-date').forEach(el => el && (el.textContent = dateStr));
+
+  const h = now.getHours();
+  const greet = h < 12 ? 'Bonjour 🌅' : h < 18 ? 'Bon après-midi ☀️' : 'Bonsoir 🌙';
+  const el = document.getElementById('greeting');
+  if (el) el.textContent = greet + ' — ' + dateStr;
+
+  updateAll();
+  renderWaterDrops();
+  updateSleepSlider();
+}
+
+function updateAll() {
+  const d = getToday();
+  const calGoal = parseInt(localStorage.getItem('calGoal') || '2000');
+  const waterGoal = parseInt(localStorage.getItem('waterGoal') || '8');
+
+  // Totals
+  const calTotal = d.cal.reduce((s,x) => s + x.kcal, 0);
+  const sportTotal = d.sport.reduce((s,x) => s + x.min, 0);
+  const sportKcal = Math.round(sportTotal * 7);
+
+  // Home quick stats
+  document.getElementById('qs-cal').textContent = calTotal;
+  document.getElementById('qs-cal-goal').textContent = calGoal;
+  document.getElementById('qs-sport').textContent = sportTotal;
+  document.getElementById('qs-water').textContent = d.water;
+  document.getElementById('qs-water-goal').textContent = waterGoal;
+  document.getElementById('qs-sleep').textContent = d.sleep ? d.sleep + 'h' : '-';
+
+  // Bars
+  document.getElementById('bar-cal').style.width = Math.min(100, (calTotal/calGoal)*100) + '%';
+  document.getElementById('bar-sport').style.width = Math.min(100, (sportTotal/60)*100) + '%';
+  document.getElementById('bar-water').style.width = Math.min(100, (d.water/waterGoal)*100) + '%';
+  document.getElementById('bar-sleep').style.width = d.sleep ? Math.min(100, (d.sleep/8)*100) + '%' : '0%';
+
+  // Calories page
+  document.getElementById('cal-total').textContent = calTotal;
+  document.getElementById('cal-prog-bar').style.width = Math.min(100, (calTotal/calGoal)*100) + '%';
+  document.getElementById('cal-goal-label').textContent = `Objectif: ${calGoal} kcal`;
+  document.getElementById('cal-remaining').textContent = Math.max(0, calGoal - calTotal) + ' restantes';
+
+  // Sport page
+  document.getElementById('sport-total').textContent = sportTotal;
+  document.getElementById('sport-kcal-burned').textContent = sportKcal;
+
+  // Water page
+  document.getElementById('water-count').textContent = d.water;
+  document.getElementById('water-goal-disp').textContent = waterGoal;
+  document.getElementById('water-ml').textContent = (d.water * 250) + ' ml';
+
+  // Sleep
+  document.getElementById('sleep-display').textContent = d.sleep ? d.sleep + 'h' : '-';
+  if (d.sleep) {
+    const q = d.sleep >= 7 ? '😊 Bon sommeil' : d.sleep >= 5 ? '😐 Sommeil moyen' : '😩 Sommeil insuffisant';
+    document.getElementById('sleep-quality-disp').textContent = q;
+  }
+
+  // Score
+  let score = 0;
+  if (calTotal > 0) score += 25;
+  if (sportTotal >= 30) score += 25;
+  else if (sportTotal > 0) score += 12;
+  if (d.water >= waterGoal) score += 25;
+  else if (d.water > 0) score += Math.round((d.water/waterGoal)*25);
+  if (d.sleep >= 7) score += 25;
+  else if (d.sleep) score += 12;
+
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('scoreRing').style.strokeDashoffset = 207 - (score/100)*207;
+
+  const titles = ['Commence ta journée !','Continue comme ça 👍','Bonne progression 💪','Presque parfait 🌟','Journée parfaite 🎉'];
+  const subs = ['Ajoute tes premières activités','Tu es sur la bonne voie','Plus que quelques efforts','Encore un petit effort','Tous tes objectifs atteints !'];
+  const idx = Math.floor(score/25);
+  document.getElementById('scoreTitle').textContent = titles[Math.min(idx, 4)];
+  document.getElementById('scoreSub').textContent = subs[Math.min(idx, 4)];
+
+  renderLogs();
+  renderWaterDrops();
+  renderRecent();
+}
+
+// CALORIES
+function addCal() {
+  const name = document.getElementById('cal-name').value.trim();
+  const kcal = parseInt(document.getElementById('cal-kcal').value);
+  const type = document.getElementById('cal-type').value;
+  if (!name || !kcal) return;
+  getToday().cal.push({ name, kcal, type, time: now() });
+  document.getElementById('cal-name').value = '';
+  document.getElementById('cal-kcal').value = '';
+  save();
+  updateAll();
+  showToast(`+${kcal} kcal ajoutées`);
+}
+
+// SPORT
+function addSport() {
+  const type = document.getElementById('sport-type').value;
+  const min = parseInt(document.getElementById('sport-min').value);
+  if (!min) return;
+  getToday().sport.push({ type, min, time: now() });
+  document.getElementById('sport-min').value = '';
+  save();
+  updateAll();
+  showToast(`${min} min ajoutées`);
+}
+
+// WATER
+function addWater(glasses) {
+  const goal = parseInt(localStorage.getItem('waterGoal') || '8');
+  getToday().water = Math.min(goal + 2, getToday().water + glasses);
+  save();
+  updateAll();
+  showToast(`+${glasses} verre${glasses>1?'s':''} !`);
+}
+
+function resetWater() {
+  getToday().water = 0;
+  save();
+  updateAll();
+}
+
+function setWaterGoal() {
+  const v = parseInt(document.getElementById('water-goal-inp').value);
+  if (v > 0) { localStorage.setItem('waterGoal', v); updateAll(); showToast('Objectif mis à jour'); }
+}
+
+function renderWaterDrops() {
+  const goal = parseInt(localStorage.getItem('waterGoal') || '8');
+  const current = getToday().water;
+  const container = document.getElementById('water-drops');
+  if (!container) return;
+  container.innerHTML = Array.from({length: goal}, (_, i) =>
+    `<div class="water-drop ${i < current ? 'filled' : ''}">💧</div>`
+  ).join('');
+}
+
+// SLEEP
+function updateSleepSlider() {
+  const val = parseFloat(document.getElementById('sleep-slider').value);
+  document.getElementById('sleep-slider-val').textContent = val + 'h';
+  const emoji = val >= 8 ? '😴' : val >= 7 ? '😊' : val >= 5 ? '😐' : '😩';
+  document.getElementById('sleep-emoji-display').textContent = emoji;
+}
+
+function saveSleep() {
+  const val = parseFloat(document.getElementById('sleep-slider').value);
+  getToday().sleep = val;
+  // Add to sleep log
+  if (!state.sleepLog) state.sleepLog = [];
+  state.sleepLog = state.sleepLog.filter(x => x.date !== todayKey);
+  state.sleepLog.unshift({ date: todayKey, hours: val });
+  save();
+  updateAll();
+  showToast(`${val}h de sommeil enregistrées`);
+}
+
+// RENDER LOGS
+function renderLogs() {
+  const d = getToday();
+
+  // Cal log
+  const calLog = document.getElementById('cal-log');
+  if (calLog) {
+    calLog.innerHTML = d.cal.length === 0 ? '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Aucun repas enregistré</div>' :
+      [...d.cal].reverse().map((item, i) => `
+        <div class="log-item">
+          <div class="log-left">
+            <div class="log-dot" style="background:var(--cal)"></div>
+            <div>
+              <div class="log-name">${item.name} <span style="font-size:11px;color:var(--muted)">(${item.type})</span></div>
+              <div class="log-time">${item.time}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="log-val" style="color:var(--cal)">${item.kcal} kcal</div>
+            <button class="log-del" onclick="delCal(${d.cal.length-1-i})">✕</button>
+          </div>
+        </div>`).join('');
+  }
+
+  // Sport log
+  const sportLog = document.getElementById('sport-log');
+  if (sportLog) {
+    sportLog.innerHTML = d.sport.length === 0 ? '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Aucune séance enregistrée</div>' :
+      [...d.sport].reverse().map((item, i) => `
+        <div class="log-item">
+          <div class="log-left">
+            <div class="log-dot" style="background:var(--sport)"></div>
+            <div>
+              <div class="log-name">${item.type}</div>
+              <div class="log-time">${item.time}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="log-val" style="color:var(--sport)">${item.min} min</div>
+            <button class="log-del" onclick="delSport(${d.sport.length-1-i})">✕</button>
+          </div>
+        </div>`).join('');
+  }
+
+  // Sleep log
+  const sleepLog = document.getElementById('sleep-log');
+  if (sleepLog && state.sleepLog) {
+    sleepLog.innerHTML = state.sleepLog.slice(0, 7).map(item => `
+      <div class="log-item">
+        <div class="log-left">
+          <div class="log-dot" style="background:var(--sleep)"></div>
+          <div>
+            <div class="log-name">${formatDate(item.date)}</div>
+          </div>
+        </div>
+        <div class="log-val" style="color:var(--sleep)">${item.hours}h</div>
+      </div>`).join('');
+  }
+}
+
+function renderRecent() {
+  const d = getToday();
+  const items = [];
+  d.cal.forEach(x => items.push({ icon: '🔥', text: x.name, val: x.kcal + ' kcal', color: 'var(--cal)', time: x.time }));
+  d.sport.forEach(x => items.push({ icon: '💪', text: x.type, val: x.min + ' min', color: 'var(--sport)', time: x.time }));
+  if (d.sleep) items.push({ icon: '😴', text: 'Sommeil', val: d.sleep + 'h', color: 'var(--sleep)', time: '' });
+
+  const el = document.getElementById('recent-list');
+  if (!el) return;
+  if (items.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Aucune activité aujourd\'hui</div>';
+    return;
+  }
+
+  el.innerHTML = items.slice(-5).reverse().map(item => `
+    <div class="log-item" style="margin-bottom:6px">
+      <div class="log-left">
+        <span style="font-size:18px">${item.icon}</span>
+        <div>
+          <div class="log-name">${item.text}</div>
+          ${item.time ? `<div class="log-time">${item.time}</div>` : ''}
+        </div>
+      </div>
+      <div class="log-val" style="color:${item.color}">${item.val}</div>
+    </div>`).join('');
+}
+
+function delCal(i) { getToday().cal.splice(i, 1); save(); updateAll(); }
+function delSport(i) { getToday().sport.splice(i, 1); save(); updateAll(); }
+
+// UTILS
+function now() {
+  const d = new Date();
+  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+}
+
+function formatDate(str) {
+  const d = new Date(str);
+  const days = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  return days[d.getDay()] + ' ' + d.getDate();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = '✓ ' + msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// TAB SWITCHING
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  const navMap = { home: 0, calories: 1, sport: 2, water: 3, sleep: 4 };
+  document.querySelectorAll('.nav-btn')[navMap[tab]].classList.add('active');
+  window.scrollTo(0, 0);
+  updateAll();
+}
+
+init();
+</script>
+</body>
+</html>
