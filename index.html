@@ -598,13 +598,22 @@ select.inp { cursor: pointer; }
       <div class="input-card-icon" style="background:rgba(249,115,22,0.15)">🍽️</div>
       <div>
         <div class="input-card-title">Ajouter un repas</div>
-        <div class="input-card-sub">Nom + calories estimées</div>
+        <div class="input-card-sub">Recherche automatique des calories</div>
       </div>
     </div>
-    <div class="row-inputs" style="margin-bottom:8px">
-      <input class="inp" id="cal-name" placeholder="Ex: Poulet riz..." style="flex:2">
-      <input class="inp" id="cal-kcal" type="number" placeholder="kcal" style="flex:1">
+    <!-- Food search -->
+    <div style="position:relative;margin-bottom:8px">
+      <input class="inp" id="cal-search" placeholder="🔍 Rechercher un aliment..." oninput="searchFood()" autocomplete="off" style="width:100%">
+      <div id="food-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface3);border:1px solid var(--border);border-radius:10px;z-index:100;max-height:200px;overflow-y:auto;margin-top:4px;"></div>
     </div>
+    <!-- Grams + auto kcal -->
+    <div class="row-inputs" style="margin-bottom:8px">
+      <input class="inp" id="cal-grams" type="number" placeholder="Grammes (ex: 100)" oninput="calcKcalFromGrams()" style="flex:1.2">
+      <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 12px;font-size:14px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;text-align:center" id="cal-kcal-display">— kcal</div>
+    </div>
+    <!-- Hidden fields -->
+    <input type="hidden" id="cal-name">
+    <input type="hidden" id="cal-kcal">
     <div class="row-inputs">
       <select class="inp" id="cal-type">
         <option>Petit-déjeuner</option>
@@ -863,15 +872,357 @@ function updateAll() {
   renderRecent();
 }
 
+// FOOD DATABASE (kcal pour 100g)
+const foodDB = [
+  // 🥩 VIANDES
+  { name: 'Poulet blanc grillé', kcal100: 165 },
+  { name: 'Poulet cuisse rôtie', kcal100: 209 },
+  { name: 'Poulet entier rôti', kcal100: 239 },
+  { name: 'Dinde blanc', kcal100: 135 },
+  { name: 'Bœuf haché 5%', kcal100: 137 },
+  { name: 'Bœuf haché 15%', kcal100: 215 },
+  { name: 'Bœuf haché 20%', kcal100: 254 },
+  { name: 'Steak bœuf grillé', kcal100: 187 },
+  { name: 'Entrecôte bœuf', kcal100: 273 },
+  { name: 'Côte de bœuf', kcal100: 291 },
+  { name: 'Veau escalope', kcal100: 105 },
+  { name: 'Agneau côtelette', kcal100: 294 },
+  { name: 'Agneau épaule', kcal100: 268 },
+  { name: 'Agneau gigot', kcal100: 217 },
+  { name: 'Merguez', kcal100: 330 },
+  { name: 'Saucisse de poulet', kcal100: 215 },
+  { name: 'Kefta bœuf', kcal100: 243 },
+  { name: 'Foie de veau', kcal100: 135 },
+  { name: 'Foie de poulet', kcal100: 119 },
+
+  // 🐟 POISSONS & FRUITS DE MER
+  { name: 'Saumon grillé', kcal100: 208 },
+  { name: 'Saumon fumé', kcal100: 172 },
+  { name: 'Thon en boîte (naturel)', kcal100: 116 },
+  { name: 'Thon en boîte (huile)', kcal100: 198 },
+  { name: 'Thon grillé', kcal100: 144 },
+  { name: 'Cabillaud', kcal100: 82 },
+  { name: 'Lieu noir', kcal100: 90 },
+  { name: 'Tilapia', kcal100: 96 },
+  { name: 'Bar / Loup', kcal100: 97 },
+  { name: 'Sardine grillée', kcal100: 208 },
+  { name: 'Sardine en boîte', kcal100: 185 },
+  { name: 'Maquereau grillé', kcal100: 205 },
+  { name: 'Crevettes cuites', kcal100: 99 },
+  { name: 'Calamars', kcal100: 92 },
+  { name: 'Moules cuites', kcal100: 86 },
+
+  // 🥚 ŒUFS & LAITAGES
+  { name: 'Œuf entier', kcal100: 155 },
+  { name: 'Blanc d\'œuf', kcal100: 52 },
+  { name: 'Œuf à la coque', kcal100: 155 },
+  { name: 'Omelette nature', kcal100: 154 },
+  { name: 'Lait entier', kcal100: 61 },
+  { name: 'Lait demi-écrémé', kcal100: 46 },
+  { name: 'Lait écrémé', kcal100: 34 },
+  { name: 'Yaourt nature', kcal100: 59 },
+  { name: 'Yaourt grec', kcal100: 97 },
+  { name: 'Fromage blanc 0%', kcal100: 45 },
+  { name: 'Fromage blanc 3%', kcal100: 68 },
+  { name: 'Skyr nature', kcal100: 63 },
+  { name: 'Camembert', kcal100: 297 },
+  { name: 'Emmental', kcal100: 382 },
+  { name: 'Gruyère', kcal100: 413 },
+  { name: 'Feta', kcal100: 264 },
+  { name: 'Mozzarella', kcal100: 280 },
+  { name: 'Parmesan', kcal100: 431 },
+  { name: 'Beurre', kcal100: 717 },
+  { name: 'Crème fraîche 30%', kcal100: 292 },
+  { name: 'Whey protéine', kcal100: 370 },
+
+  // 🍚 FÉCULENTS & CÉRÉALES
+  { name: 'Riz blanc cuit', kcal100: 130 },
+  { name: 'Riz brun cuit', kcal100: 111 },
+  { name: 'Riz basmati cuit', kcal100: 121 },
+  { name: 'Pâtes cuites', kcal100: 131 },
+  { name: 'Pâtes complètes cuites', kcal100: 124 },
+  { name: 'Spaghetti cuits', kcal100: 131 },
+  { name: 'Pain blanc', kcal100: 265 },
+  { name: 'Pain complet', kcal100: 247 },
+  { name: 'Baguette', kcal100: 270 },
+  { name: 'Pain de mie', kcal100: 264 },
+  { name: 'Pain pita', kcal100: 275 },
+  { name: 'Pomme de terre cuite', kcal100: 77 },
+  { name: 'Pomme de terre vapeur', kcal100: 72 },
+  { name: 'Frites', kcal100: 312 },
+  { name: 'Patate douce cuite', kcal100: 90 },
+  { name: 'Flocons d\'avoine', kcal100: 368 },
+  { name: 'Muesli', kcal100: 370 },
+  { name: 'Corn flakes', kcal100: 357 },
+  { name: 'Quinoa cuit', kcal100: 120 },
+  { name: 'Boulgour cuit', kcal100: 83 },
+  { name: 'Semoule cuite', kcal100: 112 },
+  { name: 'Couscous cuit', kcal100: 112 },
+  { name: 'Polenta cuite', kcal100: 70 },
+
+  // 🥗 LÉGUMINEUSES
+  { name: 'Lentilles cuites', kcal100: 116 },
+  { name: 'Lentilles corail cuites', kcal100: 100 },
+  { name: 'Pois chiches cuits', kcal100: 164 },
+  { name: 'Haricots rouges cuits', kcal100: 127 },
+  { name: 'Haricots blancs cuits', kcal100: 139 },
+  { name: 'Fèves cuites', kcal100: 110 },
+  { name: 'Pois cassés cuits', kcal100: 118 },
+  { name: 'Edamame', kcal100: 122 },
+  { name: 'Tofu', kcal100: 76 },
+
+  // 🥦 LÉGUMES
+  { name: 'Tomate', kcal100: 18 },
+  { name: 'Concombre', kcal100: 15 },
+  { name: 'Carotte', kcal100: 41 },
+  { name: 'Brocoli', kcal100: 34 },
+  { name: 'Épinards', kcal100: 23 },
+  { name: 'Courgette', kcal100: 17 },
+  { name: 'Aubergine', kcal100: 25 },
+  { name: 'Poivron rouge', kcal100: 31 },
+  { name: 'Poivron vert', kcal100: 20 },
+  { name: 'Oignon', kcal100: 40 },
+  { name: 'Ail', kcal100: 149 },
+  { name: 'Champignon', kcal100: 22 },
+  { name: 'Chou-fleur', kcal100: 25 },
+  { name: 'Chou blanc', kcal100: 25 },
+  { name: 'Salade verte', kcal100: 15 },
+  { name: 'Maïs cuit', kcal100: 86 },
+  { name: 'Petits pois', kcal100: 81 },
+  { name: 'Haricots verts', kcal100: 35 },
+  { name: 'Céleri', kcal100: 16 },
+  { name: 'Radis', kcal100: 16 },
+  { name: 'Betterave', kcal100: 43 },
+  { name: 'Navet', kcal100: 28 },
+  { name: 'Artichaut', kcal100: 53 },
+
+  // 🍎 FRUITS
+  { name: 'Banane', kcal100: 89 },
+  { name: 'Pomme', kcal100: 52 },
+  { name: 'Orange', kcal100: 47 },
+  { name: 'Fraise', kcal100: 32 },
+  { name: 'Raisin', kcal100: 69 },
+  { name: 'Mangue', kcal100: 60 },
+  { name: 'Avocat', kcal100: 160 },
+  { name: 'Kiwi', kcal100: 61 },
+  { name: 'Poire', kcal100: 57 },
+  { name: 'Pêche', kcal100: 39 },
+  { name: 'Abricot', kcal100: 48 },
+  { name: 'Cerise', kcal100: 63 },
+  { name: 'Pastèque', kcal100: 30 },
+  { name: 'Melon', kcal100: 34 },
+  { name: 'Ananas', kcal100: 50 },
+  { name: 'Grenade', kcal100: 83 },
+  { name: 'Figue fraîche', kcal100: 74 },
+  { name: 'Datte', kcal100: 282 },
+  { name: 'Figue sèche', kcal100: 249 },
+  { name: 'Raisin sec', kcal100: 299 },
+  { name: 'Citron', kcal100: 29 },
+
+  // 🌰 OLÉAGINEUX
+  { name: 'Amandes', kcal100: 579 },
+  { name: 'Noix', kcal100: 654 },
+  { name: 'Noix de cajou', kcal100: 553 },
+  { name: 'Noisettes', kcal100: 628 },
+  { name: 'Cacahuètes', kcal100: 567 },
+  { name: 'Pistaches', kcal100: 562 },
+  { name: 'Graines de tournesol', kcal100: 584 },
+  { name: 'Graines de chia', kcal100: 486 },
+  { name: 'Graines de lin', kcal100: 534 },
+  { name: 'Tahini (purée sésame)', kcal100: 595 },
+  { name: 'Beurre de cacahuète', kcal100: 588 },
+
+  // 🫒 HUILES & GRAISSES
+  { name: 'Huile d\'olive', kcal100: 884 },
+  { name: 'Huile de tournesol', kcal100: 884 },
+  { name: 'Huile de coco', kcal100: 862 },
+
+  // 🍯 SUCRES & CONDIMENTS
+  { name: 'Miel', kcal100: 304 },
+  { name: 'Sucre blanc', kcal100: 387 },
+  { name: 'Sucre roux', kcal100: 373 },
+  { name: 'Confiture', kcal100: 250 },
+  { name: 'Ketchup', kcal100: 112 },
+  { name: 'Mayonnaise', kcal100: 680 },
+  { name: 'Moutarde', kcal100: 66 },
+  { name: 'Sauce soja', kcal100: 53 },
+  { name: 'Harissa', kcal100: 50 },
+  { name: 'Chermoula', kcal100: 120 },
+
+  // 🥙 PLATS ORIENTAUX
+  { name: 'Couscous poulet (plat)', kcal100: 110 },
+  { name: 'Couscous agneau (plat)', kcal100: 130 },
+  { name: 'Tajine poulet citron', kcal100: 118 },
+  { name: 'Tajine agneau pruneaux', kcal100: 165 },
+  { name: 'Maklouba', kcal100: 155 },
+  { name: 'Chwarma poulet', kcal100: 220 },
+  { name: 'Chwarma viande', kcal100: 255 },
+  { name: 'Falafel', kcal100: 333 },
+  { name: 'Hummus', kcal100: 177 },
+  { name: 'Taboulé', kcal100: 105 },
+  { name: 'Fattoush', kcal100: 80 },
+  { name: 'Mhammara', kcal100: 220 },
+  { name: 'Brick à l\'œuf', kcal100: 230 },
+  { name: 'Pastilla poulet', kcal100: 265 },
+  { name: 'Rfissa', kcal100: 175 },
+  { name: 'Harira (soupe)', kcal100: 68 },
+  { name: 'Chorba', kcal100: 72 },
+  { name: 'Mlokhia', kcal100: 55 },
+  { name: 'Makroud', kcal100: 390 },
+  { name: 'Baklava', kcal100: 428 },
+  { name: 'Knafeh', kcal100: 384 },
+  { name: 'Loukoum', kcal100: 322 },
+  { name: 'Chebakia', kcal100: 450 },
+  { name: 'Sellou / Sfouf', kcal100: 490 },
+  { name: 'Msemen / Meloui', kcal100: 310 },
+  { name: 'Batbout', kcal100: 268 },
+  { name: 'Khobz (pain marocain)', kcal100: 265 },
+  { name: 'Shakshuka', kcal100: 95 },
+  { name: 'Ful medames', kcal100: 110 },
+  { name: 'Dolma', kcal100: 175 },
+  { name: 'Kebab (assiette)', kcal100: 218 },
+  { name: 'Riz pilaf', kcal100: 150 },
+
+  // 🍔 FAST FOOD
+  { name: 'Big Mac', kcal100: 257 },
+  { name: 'McChicken', kcal100: 240 },
+  { name: 'Nuggets x6 McDonald\'s', kcal100: 233 },
+  { name: 'Frites McDonald\'s (medium)', kcal100: 312 },
+  { name: 'McFlurry', kcal100: 185 },
+  { name: 'Whopper Burger King', kcal100: 253 },
+  { name: 'Burger King frites', kcal100: 295 },
+  { name: 'KFC Original (pilon)', kcal100: 231 },
+  { name: 'KFC Zinger Burger', kcal100: 255 },
+  { name: 'Kebab sandwich', kcal100: 235 },
+  { name: 'Tacos (format L)', kcal100: 210 },
+  { name: 'Pizza margherita', kcal100: 266 },
+  { name: 'Pizza pepperoni', kcal100: 298 },
+  { name: 'Pizza 4 fromages', kcal100: 316 },
+  { name: 'Hamburger classique', kcal100: 295 },
+  { name: 'Cheeseburger', kcal100: 305 },
+  { name: 'Hot-dog', kcal100: 290 },
+  { name: 'Sushi (nigiri)', kcal100: 130 },
+  { name: 'Maki California', kcal100: 158 },
+
+  // 🥐 PLATS FRANÇAIS
+  { name: 'Quiche lorraine', kcal100: 295 },
+  { name: 'Gratin dauphinois', kcal100: 165 },
+  { name: 'Ratatouille', kcal100: 60 },
+  { name: 'Bœuf bourguignon', kcal100: 145 },
+  { name: 'Cassoulet', kcal100: 155 },
+  { name: 'Soupe à l\'oignon', kcal100: 67 },
+  { name: 'Croque-monsieur', kcal100: 286 },
+  { name: 'Omelette fromage', kcal100: 185 },
+  { name: 'Salade niçoise', kcal100: 135 },
+  { name: 'Crêpe nature', kcal100: 196 },
+  { name: 'Crêpe Nutella', kcal100: 305 },
+  { name: 'Galette bretonne', kcal100: 218 },
+  { name: 'Croissant', kcal100: 406 },
+  { name: 'Pain au chocolat', kcal100: 395 },
+  { name: 'Brioche', kcal100: 345 },
+  { name: 'Éclair au chocolat', kcal100: 295 },
+  { name: 'Tarte aux pommes', kcal100: 210 },
+  { name: 'Mousse au chocolat', kcal100: 188 },
+  { name: 'Crème brûlée', kcal100: 240 },
+  { name: 'Île flottante', kcal100: 130 },
+
+  // 🍫 SNACKS & SUCRERIES
+  { name: 'Nutella', kcal100: 539 },
+  { name: 'Chocolat noir 70%', kcal100: 598 },
+  { name: 'Chocolat au lait', kcal100: 535 },
+  { name: 'Chocolat blanc', kcal100: 539 },
+  { name: 'Chips nature', kcal100: 536 },
+  { name: 'Chips paprika', kcal100: 530 },
+  { name: 'Biscuits Lu Petit Beurre', kcal100: 440 },
+  { name: 'Oreo', kcal100: 473 },
+  { name: 'Prince chocolat', kcal100: 455 },
+  { name: 'Kinder Bueno', kcal100: 547 },
+  { name: 'Twix', kcal100: 495 },
+  { name: 'Kit Kat', kcal100: 518 },
+  { name: 'Mars', kcal100: 449 },
+  { name: 'Snickers', kcal100: 488 },
+  { name: 'Bonbons Haribo', kcal100: 336 },
+
+  // 🥤 BOISSONS
+  { name: 'Jus d\'orange (100%)', kcal100: 45 },
+  { name: 'Jus de pomme', kcal100: 47 },
+  { name: 'Coca-Cola', kcal100: 42 },
+  { name: 'Coca-Cola Zero', kcal100: 1 },
+  { name: 'Limonade', kcal100: 38 },
+  { name: 'Lait chocolaté', kcal100: 70 },
+  { name: 'Smoothie banane', kcal100: 80 },
+  { name: 'Café (sans sucre)', kcal100: 2 },
+  { name: 'Thé (sans sucre)', kcal100: 1 },
+  { name: 'Thé à la menthe', kcal100: 8 },
+];
+
+
+let selectedFood = null;
+
+function searchFood() {
+  const query = document.getElementById('cal-search').value.trim().toLowerCase();
+  const box = document.getElementById('food-suggestions');
+  selectedFood = null;
+  document.getElementById('cal-name').value = '';
+  document.getElementById('cal-kcal').value = '';
+  document.getElementById('cal-kcal-display').textContent = '— kcal';
+
+  if (query.length < 2) { box.style.display = 'none'; return; }
+
+  const results = foodDB.filter(f => f.name.toLowerCase().includes(query)).slice(0, 6);
+  if (results.length === 0) { box.style.display = 'none'; return; }
+
+  box.innerHTML = results.map((f, i) => `
+    <div onclick="selectFood(${i})" data-idx="${i}" style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;"
+      onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+      <span>${f.name}</span>
+      <span style="color:var(--muted);font-size:11px">${f.kcal100} kcal/100g</span>
+    </div>`).join('');
+  box._results = results;
+  box.style.display = 'block';
+}
+
+function selectFood(idx) {
+  const box = document.getElementById('food-suggestions');
+  selectedFood = box._results[idx];
+  document.getElementById('cal-search').value = selectedFood.name;
+  document.getElementById('cal-name').value = selectedFood.name;
+  box.style.display = 'none';
+  calcKcalFromGrams();
+  document.getElementById('cal-grams').focus();
+}
+
+function calcKcalFromGrams() {
+  if (!selectedFood) return;
+  const g = parseFloat(document.getElementById('cal-grams').value);
+  if (!g || g <= 0) { document.getElementById('cal-kcal-display').textContent = '— kcal'; document.getElementById('cal-kcal').value = ''; return; }
+  const kcal = Math.round((selectedFood.kcal100 * g) / 100);
+  document.getElementById('cal-kcal-display').textContent = kcal + ' kcal';
+  document.getElementById('cal-kcal').value = kcal;
+}
+
+// Close suggestions on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#cal-search') && !e.target.closest('#food-suggestions')) {
+    document.getElementById('food-suggestions').style.display = 'none';
+  }
+});
+
 // CALORIES
 function addCal() {
   const name = document.getElementById('cal-name').value.trim();
   const kcal = parseInt(document.getElementById('cal-kcal').value);
   const type = document.getElementById('cal-type').value;
-  if (!name || !kcal) return;
-  getToday().cal.push({ name, kcal, type, time: now() });
-  document.getElementById('cal-name').value = '';
+  const grams = document.getElementById('cal-grams').value;
+  if (!name || !kcal) { showToast('⚠️ Sélectionne un aliment et entre le grammage'); return; }
+  const displayName = grams ? `${name} (${grams}g)` : name;
+  getToday().cal.push({ name: displayName, kcal, type, time: now() });
+  document.getElementById('cal-search').value = '';
+  document.getElementById('cal-grams').value = '';
   document.getElementById('cal-kcal').value = '';
+  document.getElementById('cal-name').value = '';
+  document.getElementById('cal-kcal-display').textContent = '— kcal';
+  selectedFood = null;
   save();
   updateAll();
   showToast(`+${kcal} kcal ajoutées`);
