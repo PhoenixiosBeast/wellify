@@ -3,518 +3,249 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Wellify — Suivi Bien-être</title>
+<title>Wellify — Bien-être Musulman</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #080810;
-  --surface: #111118;
-  --surface2: #1a1a24;
-  --surface3: #22222f;
-  --accent: #6ee7b7;
-  --accent2: #f59e0b;
+  --bg: #06080f;
+  --surface: #0d1117;
+  --surface2: #141b25;
+  --surface3: #1c2535;
+  --accent: #4ade80;
+  --accent2: #d4a843;
   --accent3: #818cf8;
   --accent4: #f472b6;
-  --text: #f0f0f8;
-  --muted: #5b5b70;
-  --border: rgba(255,255,255,0.06);
+  --text: #e8f0f8;
+  --muted: #4a5568;
+  --border: rgba(255,255,255,0.07);
   --cal: #f97316;
-  --sport: #6ee7b7;
+  --sport: #4ade80;
   --water: #38bdf8;
-  --weight: #a78bfa;
-  --sleep: #f472b6;
+  --sleep: #a78bfa;
+  --islam: #d4a843;
+  --islam2: #4ade80;
+  --ramadan: #f59e0b;
 }
-
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:90px; overflow-x:hidden; }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
 
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding-bottom: 90px;
-  overflow-x: hidden;
-}
+header { padding:44px 20px 16px; background:linear-gradient(180deg,rgba(212,168,67,0.06) 0%,transparent 100%); }
+.header-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+.app-title { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; background:linear-gradient(135deg,var(--accent2),var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.date-pill { background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:12px; color:var(--muted); font-weight:500; }
+.greeting { font-size:14px; color:var(--muted); font-weight:300; }
 
-/* TAB SYSTEM */
-.tab-content { display: none; }
-.tab-content.active { display: block; }
+/* PRAYER BANNER */
+.prayer-banner { margin:0 20px 16px; background:linear-gradient(135deg,rgba(212,168,67,0.15),rgba(74,222,128,0.08)); border:1px solid rgba(212,168,67,0.3); border-radius:20px; padding:16px 20px; }
+.prayer-next { display:flex; justify-content:space-between; align-items:center; }
+.prayer-name { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--islam); }
+.prayer-time-big { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--text); }
+.prayer-label { font-size:11px; color:var(--muted); margin-bottom:2px; }
+.prayer-countdown { font-size:12px; color:var(--accent); margin-top:4px; }
+.prayer-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-top:12px; }
+.prayer-item { text-align:center; background:var(--surface2); border-radius:10px; padding:8px 4px; border:1px solid var(--border); }
+.prayer-item.active { background:rgba(212,168,67,0.15); border-color:rgba(212,168,67,0.4); }
+.prayer-item-name { font-size:9px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
+.prayer-item-time { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; margin-top:2px; color:var(--text); }
+.prayer-item.active .prayer-item-time { color:var(--islam); }
 
-/* HEADER */
-header {
-  padding: 44px 20px 16px;
-  background: linear-gradient(180deg, rgba(110,231,183,0.04) 0%, transparent 100%);
-}
+/* RAMADAN BANNER */
+.ramadan-banner { margin:0 20px 16px; background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(212,168,67,0.08)); border:1px solid rgba(245,158,11,0.35); border-radius:20px; padding:16px 20px; }
+.ramadan-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; color:var(--ramadan); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+.ramadan-times { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.ramadan-time-card { background:var(--surface2); border-radius:12px; padding:12px; text-align:center; border:1px solid var(--border); }
+.ramadan-time-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px; }
+.ramadan-time-val { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; }
+.ramadan-countdown { text-align:center; margin-top:10px; font-size:13px; color:var(--ramadan); font-weight:600; }
+.ramadan-fast-bar { margin-top:10px; height:6px; background:var(--surface2); border-radius:3px; overflow:hidden; }
+.ramadan-fast-fill { height:100%; background:linear-gradient(90deg,var(--ramadan),var(--islam)); border-radius:3px; transition:width 1s; }
 
-.header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 4px;
-}
+/* SCORE */
+.score-card { margin:16px 20px; background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(74,222,128,0.06)); border:1px solid rgba(212,168,67,0.2); border-radius:20px; padding:20px; display:flex; align-items:center; gap:16px; }
+.score-ring { position:relative; width:80px; height:80px; flex-shrink:0; }
+.score-ring svg { transform:rotate(-90deg); }
+.ring-bg2 { fill:none; stroke:rgba(255,255,255,0.06); stroke-width:5; }
+.ring-prog2 { fill:none; stroke:url(#scoreGrad); stroke-width:5; stroke-linecap:round; stroke-dasharray:207; stroke-dashoffset:207; transition:stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1); }
+.score-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.score-num { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; line-height:1; }
+.score-label { font-size:9px; color:var(--muted); text-transform:uppercase; }
+.score-info { flex:1; }
+.score-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin-bottom:6px; }
+.score-sub { font-size:13px; color:var(--muted); line-height:1.5; }
 
-.app-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 26px;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--accent), var(--accent3));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.date-pill {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 500;
-}
-
-.greeting {
-  font-size: 14px;
-  color: var(--muted);
-  font-weight: 300;
-}
-
-/* SCORE CARD */
-.score-card {
-  margin: 16px 20px;
-  background: linear-gradient(135deg, rgba(110,231,183,0.12), rgba(129,140,248,0.08));
-  border: 1px solid rgba(110,231,183,0.2);
-  border-radius: 20px;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.score-ring {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  flex-shrink: 0;
-}
-
-.score-ring svg { transform: rotate(-90deg); }
-.ring-bg2 { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 5; }
-.ring-prog2 {
-  fill: none;
-  stroke: url(#scoreGrad);
-  stroke-width: 5;
-  stroke-linecap: round;
-  stroke-dasharray: 207;
-  stroke-dashoffset: 207;
-  transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1);
-}
-
-.score-center {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.score-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.score-label { font-size: 9px; color: var(--muted); text-transform: uppercase; }
-
-.score-info { flex: 1; }
-.score-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-.score-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
-
-/* QUICK STATS */
-.quick-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  padding: 0 20px;
-  margin-bottom: 16px;
-}
-
-.quick-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-  overflow: hidden;
-}
-
-.quick-card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  border-radius: 16px 16px 0 0;
-}
-
-.quick-card.cal::after { background: var(--cal); }
-.quick-card.sport::after { background: var(--sport); }
-.quick-card.water::after { background: var(--water); }
-.quick-card.weight::after { background: var(--weight); }
-.quick-card.sleep::after { background: var(--sleep); }
-
-.quick-card:active { transform: scale(0.97); }
-
-.quick-icon { font-size: 24px; margin-bottom: 8px; }
-.quick-value {
-  font-family: 'Syne', sans-serif;
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1;
-  margin-bottom: 2px;
-}
-
-.quick-unit { font-size: 11px; color: var(--muted); }
-.quick-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
-
-.quick-bar {
-  height: 3px;
-  background: var(--surface2);
-  border-radius: 2px;
-  margin-top: 10px;
-  overflow: hidden;
-}
-
-.quick-bar-fill {
-  height: 100%;
-  border-radius: 2px;
-  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
-}
+/* QUICK GRID */
+.quick-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; padding:0 20px; margin-bottom:16px; }
+.quick-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden; }
+.quick-card::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:16px 16px 0 0; }
+.quick-card.cal::after { background:var(--cal); }
+.quick-card.sport::after { background:var(--sport); }
+.quick-card.water::after { background:var(--water); }
+.quick-card.sleep::after { background:var(--sleep); }
+.quick-card.islam::after { background:var(--islam); }
+.quick-card:active { transform:scale(0.97); }
+.quick-icon { font-size:24px; margin-bottom:8px; }
+.quick-value { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; line-height:1; margin-bottom:2px; }
+.quick-unit { font-size:11px; color:var(--muted); }
+.quick-label { font-size:12px; color:var(--muted); margin-top:4px; }
+.quick-bar { height:3px; background:var(--surface2); border-radius:2px; margin-top:10px; overflow:hidden; }
+.quick-bar-fill { height:100%; border-radius:2px; transition:width 0.6s cubic-bezier(0.4,0,0.2,1); }
 
 /* SECTION */
-.section {
-  padding: 0 20px;
-  margin-bottom: 20px;
-}
-
-.section-hd {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.section-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
+.section { padding:0 20px; margin-bottom:20px; }
+.section-hd { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.section-title { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
 
 /* INPUT CARDS */
-.input-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 10px;
-}
+.input-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:10px; }
+.input-card-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.input-card-icon { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.input-card-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; }
+.input-card-sub { font-size:12px; color:var(--muted); }
+.row-inputs { display:flex; gap:8px; }
+.inp { flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; -webkit-appearance:none; }
+.inp:focus { border-color:var(--islam); }
+.inp::placeholder { color:var(--muted); }
+select.inp { cursor:pointer; }
+.btn-add { padding:11px 18px; border-radius:10px; border:none; font-family:'Syne',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+.btn-add:active { transform:scale(0.95); }
 
-.input-card-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-}
+/* LOGS */
+.log-list { display:flex; flex-direction:column; gap:6px; margin-top:10px; }
+.log-item { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; background:var(--surface2); border-radius:10px; font-size:13px; animation:fadeIn 0.3s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.log-left { display:flex; align-items:center; gap:8px; }
+.log-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.log-name { font-weight:500; }
+.log-time { font-size:11px; color:var(--muted); margin-top:1px; }
+.log-val { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; }
+.log-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:14px; padding:4px; }
 
-.input-card-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-}
+/* WATER */
+.water-btns { display:flex; gap:8px; flex-wrap:wrap; }
+.water-btn { flex:1; min-width:60px; padding:10px 8px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; color:var(--text); font-family:'Syne',sans-serif; font-size:12px; font-weight:700; cursor:pointer; text-align:center; transition:all 0.2s; }
+.water-btn:active { background:var(--water); border-color:var(--water); transform:scale(0.95); }
+.water-visual { display:flex; gap:6px; margin-top:12px; flex-wrap:wrap; }
+.water-drop { font-size:22px; transition:all 0.3s; opacity:0.2; }
+.water-drop.filled { opacity:1; }
 
-.input-card-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-}
+/* SLEEP */
+.sleep-row { display:flex; align-items:center; gap:12px; }
+.slider { flex:1; -webkit-appearance:none; height:4px; border-radius:2px; background:var(--surface2); outline:none; }
+.slider::-webkit-slider-thumb { -webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:var(--sleep); cursor:pointer; }
+.sleep-val { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--sleep); min-width:40px; text-align:right; }
 
-.input-card-sub { font-size: 12px; color: var(--muted); }
-
-.row-inputs { display: flex; gap: 8px; }
-
-.inp {
-  flex: 1;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 11px 12px;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s;
-  -webkit-appearance: none;
-}
-
-.inp:focus { border-color: var(--accent); }
-.inp::placeholder { color: var(--muted); }
-
-select.inp { cursor: pointer; }
-
-.btn-add {
-  padding: 11px 18px;
-  border-radius: 10px;
-  border: none;
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.btn-add:active { transform: scale(0.95); }
-
-/* LOG LIST */
-.log-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
-
-.log-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  background: var(--surface2);
-  border-radius: 10px;
-  font-size: 13px;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-
-.log-left { display: flex; align-items: center; gap: 8px; }
-.log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.log-name { font-weight: 500; }
-.log-time { font-size: 11px; color: var(--muted); margin-top: 1px; }
-.log-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; }
-.log-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 4px; }
-
-/* WATER BUTTONS */
-.water-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-
-.water-btn {
-  flex: 1;
-  min-width: 60px;
-  padding: 10px 8px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  color: var(--text);
-  font-family: 'Syne', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.2s;
-}
-
-.water-btn:active { background: var(--water); border-color: var(--water); transform: scale(0.95); }
-
-/* WATER VISUAL */
-.water-visual {
-  display: flex;
-  gap: 6px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
-
-.water-drop {
-  font-size: 22px;
-  transition: all 0.3s;
-  opacity: 0.2;
-}
-
-.water-drop.filled { opacity: 1; }
-
-/* SLEEP SLIDER */
-.sleep-row { display: flex; align-items: center; gap: 12px; }
-
-.slider {
-  flex: 1;
-  -webkit-appearance: none;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--surface2);
-  outline: none;
-}
-
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--sleep);
-  cursor: pointer;
-}
-
-.sleep-val {
-  font-family: 'Syne', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--sleep);
-  min-width: 40px;
-  text-align: right;
-}
-
-/* WEIGHT CHART */
-.mini-chart {
-  height: 60px;
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-  margin-top: 12px;
-}
-
-.chart-bar {
-  flex: 1;
-  border-radius: 4px 4px 0 0;
-  min-height: 4px;
-  transition: height 0.4s cubic-bezier(0.4,0,0.2,1);
-  position: relative;
-}
-
-.chart-bar-label {
-  position: absolute;
-  bottom: -16px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 9px;
-  color: var(--muted);
-  white-space: nowrap;
-}
+/* TOGGLE */
+.toggle-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); }
+.toggle-label { font-size:14px; font-weight:500; }
+.toggle-sub { font-size:12px; color:var(--muted); }
+.toggle { position:relative; width:44px; height:24px; flex-shrink:0; }
+.toggle input { opacity:0; width:0; height:0; }
+.toggle-slider { position:absolute; inset:0; background:var(--surface3); border-radius:24px; transition:0.3s; cursor:pointer; }
+.toggle-slider:before { content:''; position:absolute; height:18px; width:18px; left:3px; bottom:3px; background:var(--muted); border-radius:50%; transition:0.3s; }
+input:checked + .toggle-slider { background:var(--islam); }
+input:checked + .toggle-slider:before { transform:translateX(20px); background:white; }
 
 /* BOTTOM NAV */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(8,8,16,0.92);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  padding: 10px 20px 20px;
-  display: flex;
-  justify-content: space-around;
-}
-
-.nav-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  opacity: 0.35;
-  transition: opacity 0.2s;
-  padding: 4px 12px;
-}
-
-.nav-btn.active { opacity: 1; }
-.nav-btn-icon { font-size: 22px; }
-.nav-btn-label { font-size: 10px; color: var(--text); font-weight: 500; letter-spacing: 0.04em; }
-
-/* STATS PAGE */
-.stats-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.stat-mini {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 10px;
-  text-align: center;
-}
-
-.stat-mini-val {
-  font-family: 'Syne', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
-.stat-mini-label { font-size: 10px; color: var(--muted); }
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; background:rgba(6,8,15,0.95); backdrop-filter:blur(20px); border-top:1px solid var(--border); padding:10px 4px 20px; display:flex; justify-content:space-around; }
+.nav-btn { display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:none; cursor:pointer; opacity:0.3; transition:opacity 0.2s; padding:4px 6px; }
+.nav-btn.active { opacity:1; }
+.nav-btn-icon { font-size:20px; }
+.nav-btn-label { font-size:9px; color:var(--text); font-weight:500; letter-spacing:0.03em; }
 
 /* TOAST */
-.toast {
-  position: fixed;
-  top: 50px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-20px);
-  background: var(--accent);
-  color: #001a10;
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  padding: 10px 20px;
-  border-radius: 20px;
-  z-index: 999;
-  opacity: 0;
-  transition: all 0.3s;
-  white-space: nowrap;
-}
+.toast { position:fixed; top:50px; left:50%; transform:translateX(-50%) translateY(-20px); background:var(--islam); color:#1a0e00; font-family:'Syne',sans-serif; font-weight:700; font-size:13px; padding:10px 20px; border-radius:20px; z-index:999; opacity:0; transition:all 0.3s; white-space:nowrap; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.goal-row { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-top:6px; }
 
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* IBADAH */
+.ibadah-check { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); cursor:pointer; }
+.ibadah-check:last-child { border-bottom:none; }
+.ibadah-checkbox { width:24px; height:24px; border-radius:8px; border:2px solid var(--muted); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.2s; }
+.ibadah-checkbox.checked { background:var(--islam); border-color:var(--islam); }
+.ibadah-check-icon { font-size:14px; color:white; }
+.ibadah-text { flex:1; }
+.ibadah-name { font-size:14px; font-weight:500; }
+.ibadah-sub { font-size:11px; color:var(--muted); }
+.ibadah-pts { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--islam); }
 
-/* Goal indicator */
-.goal-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 6px;
-}
+/* BILAN */
+.bilan-chart-wrap { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:12px; }
+.bilan-chart-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+.medical-card { border-radius:14px; padding:14px 16px; margin-bottom:10px; display:flex; gap:12px; align-items:flex-start; }
+.medical-card.ok { background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.2); }
+.medical-card.warn { background:rgba(249,115,22,0.08); border:1px solid rgba(249,115,22,0.25); }
+.medical-card.danger { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3); }
+.medical-card.islam-ok { background:rgba(212,168,67,0.08); border:1px solid rgba(212,168,67,0.25); }
+.medical-icon { font-size:22px; flex-shrink:0; margin-top:2px; }
+.medical-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; margin-bottom:4px; }
+.medical-text { font-size:12px; color:var(--muted); line-height:1.55; }
+.bilan-tabs { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+.bilan-tab { padding:7px 14px; border-radius:20px; border:1px solid var(--border); background:var(--surface2); font-family:'Syne',sans-serif; font-size:11px; font-weight:700; color:var(--muted); cursor:pointer; transition:all 0.2s; }
+.bilan-tab.active { background:var(--islam); color:#1a0e00; border-color:var(--islam); }
+.stat-summary { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+.stat-sum-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px; text-align:center; }
+.stat-sum-val { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; line-height:1; margin-bottom:4px; }
+.stat-sum-label { font-size:10px; color:var(--muted); }
+
+/* CITY SETUP */
+.city-card { background:linear-gradient(135deg,rgba(212,168,67,0.12),rgba(74,222,128,0.06)); border:1px solid rgba(212,168,67,0.25); border-radius:16px; padding:16px; margin-bottom:12px; }
 </style>
 </head>
 <body>
-
-<!-- TOAST -->
-<div class="toast" id="toast">✓ Ajouté !</div>
+<div class="toast" id="toast"></div>
 
 <!-- TAB: ACCUEIL -->
 <div class="tab-content active" id="tab-home">
-
 <header>
   <div class="header-row">
-    <div class="app-title">Wellify</div>
+    <div class="app-title">☽ Wellify</div>
     <div class="date-pill" id="dateDisplay"></div>
   </div>
   <div class="greeting" id="greeting"></div>
 </header>
 
+<!-- Prayer Banner -->
+<div class="prayer-banner" id="prayer-banner">
+  <div class="prayer-next">
+    <div>
+      <div class="prayer-label">Prochaine prière</div>
+      <div class="prayer-name" id="next-prayer-name">—</div>
+      <div class="prayer-countdown" id="prayer-countdown">Calcul en cours...</div>
+    </div>
+    <div style="text-align:right">
+      <div class="prayer-label">Heure</div>
+      <div class="prayer-time-big" id="next-prayer-time">—</div>
+    </div>
+  </div>
+  <div class="prayer-grid" id="prayer-grid"></div>
+</div>
+
+<!-- Ramadan Banner (hidden by default) -->
+<div id="ramadan-section" style="display:none">
+  <div class="ramadan-banner">
+    <div class="ramadan-title">🌙 Mode Ramadan actif</div>
+    <div class="ramadan-times">
+      <div class="ramadan-time-card">
+        <div class="ramadan-time-label">🌅 Suhoor (Fajr)</div>
+        <div class="ramadan-time-val" id="ram-suhoor" style="color:var(--accent2)">—</div>
+      </div>
+      <div class="ramadan-time-card">
+        <div class="ramadan-time-label">🌇 Iftar (Maghreb)</div>
+        <div class="ramadan-time-val" id="ram-iftar" style="color:var(--ramadan)">—</div>
+      </div>
+    </div>
+    <div class="ramadan-countdown" id="ram-countdown">—</div>
+    <div class="ramadan-fast-bar"><div class="ramadan-fast-fill" id="ram-fast-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- Score -->
 <div class="score-card">
   <div class="score-ring">
     <svg width="80" height="80" viewBox="0 0 80 80">
-      <defs>
-        <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style="stop-color:#6ee7b7"/>
-          <stop offset="100%" style="stop-color:#818cf8"/>
-        </linearGradient>
-      </defs>
+      <defs><linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#d4a843"/><stop offset="100%" style="stop-color:#4ade80"/></linearGradient></defs>
       <circle class="ring-bg2" cx="40" cy="40" r="33"/>
       <circle class="ring-prog2" id="scoreRing" cx="40" cy="40" r="33"/>
     </svg>
@@ -529,6 +260,7 @@ select.inp { cursor: pointer; }
   </div>
 </div>
 
+<!-- Quick Grid -->
 <div class="quick-grid">
   <div class="quick-card cal" onclick="switchTab('calories')">
     <div class="quick-icon">🔥</div>
@@ -548,25 +280,22 @@ select.inp { cursor: pointer; }
     <div class="quick-icon">💧</div>
     <div class="quick-value"><span id="qs-water">0</span></div>
     <div class="quick-unit">/ <span id="qs-water-goal">8</span> verres</div>
-    <div class="quick-label">Hydratation</div>
+    <div class="quick-label">Eau</div>
     <div class="quick-bar"><div class="quick-bar-fill" id="bar-water" style="background:var(--water);width:0%"></div></div>
   </div>
-  <div class="quick-card sleep" onclick="switchTab('sleep')">
-    <div class="quick-icon">😴</div>
-    <div class="quick-value"><span id="qs-sleep">-</span></div>
-    <div class="quick-unit">heures de sommeil</div>
-    <div class="quick-label">Sommeil</div>
-    <div class="quick-bar"><div class="quick-bar-fill" id="bar-sleep" style="background:var(--sleep);width:0%"></div></div>
+  <div class="quick-card islam" onclick="switchTab('ibadah')">
+    <div class="quick-icon">🕌</div>
+    <div class="quick-value"><span id="qs-ibadah">0</span>/5</div>
+    <div class="quick-unit">prières accomplies</div>
+    <div class="quick-label">Ibadah</div>
+    <div class="quick-bar"><div class="quick-bar-fill" id="bar-ibadah" style="background:var(--islam);width:0%"></div></div>
   </div>
 </div>
 
 <div class="section">
   <div class="section-hd"><div class="section-title">Activité récente</div></div>
-  <div id="recent-list">
-    <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Aucune activité aujourd'hui</div>
-  </div>
+  <div id="recent-list"><div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Aucune activité aujourd'hui</div></div>
 </div>
-
 </div>
 
 <!-- TAB: CALORIES -->
@@ -577,41 +306,34 @@ select.inp { cursor: pointer; }
     <div class="date-pill" id="cal-date"></div>
   </div>
 </header>
-
 <div class="section">
-  <!-- Big display -->
+  <div id="ramadan-cal-info" style="display:none;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:var(--ramadan)">
+    🌙 Mode Ramadan — Repas: Suhoor & Iftar uniquement
+  </div>
   <div style="text-align:center;padding:16px 0 24px;">
     <div style="font-family:'Syne',sans-serif;font-size:56px;font-weight:800;color:var(--cal);line-height:1" id="cal-total">0</div>
     <div style="font-size:14px;color:var(--muted)">kcal aujourd'hui</div>
     <div style="margin-top:12px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;">
       <div id="cal-prog-bar" style="height:100%;background:var(--cal);border-radius:3px;width:0%;transition:width 0.5s ease;"></div>
     </div>
-    <div class="goal-row">
-      <span>0</span>
-      <span id="cal-goal-label">Objectif: 2000 kcal</span>
-      <span id="cal-remaining">2000 restantes</span>
-    </div>
+    <div class="goal-row"><span>0</span><span id="cal-goal-label">Objectif: 2000 kcal</span><span id="cal-remaining">2000 restantes</span></div>
   </div>
-
   <div class="input-card">
     <div class="input-card-header">
       <div class="input-card-icon" style="background:rgba(249,115,22,0.15)">🍽️</div>
       <div>
         <div class="input-card-title">Ajouter un repas</div>
-        <div class="input-card-sub">Recherche automatique des calories</div>
+        <div class="input-card-sub">Recherche automatique • aliments halal</div>
       </div>
     </div>
-    <!-- Food search -->
     <div style="position:relative;margin-bottom:8px">
       <input class="inp" id="cal-search" placeholder="🔍 Rechercher un aliment..." oninput="searchFood()" autocomplete="off" style="width:100%">
       <div id="food-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface3);border:1px solid var(--border);border-radius:10px;z-index:100;max-height:200px;overflow-y:auto;margin-top:4px;"></div>
     </div>
-    <!-- Grams + auto kcal -->
     <div class="row-inputs" style="margin-bottom:8px">
       <input class="inp" id="cal-grams" type="number" placeholder="Grammes (ex: 100)" oninput="calcKcalFromGrams()" style="flex:1.2">
-      <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 12px;font-size:14px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;text-align:center" id="cal-kcal-display">— kcal</div>
+      <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 12px;font-size:14px;color:var(--islam);font-family:'Syne',sans-serif;font-weight:700;text-align:center" id="cal-kcal-display">— kcal</div>
     </div>
-    <!-- Hidden fields -->
     <input type="hidden" id="cal-name">
     <input type="hidden" id="cal-kcal">
     <div class="row-inputs">
@@ -620,11 +342,12 @@ select.inp { cursor: pointer; }
         <option>Déjeuner</option>
         <option>Dîner</option>
         <option>Collation</option>
+        <option>🌅 Suhoor</option>
+        <option>🌇 Iftar</option>
       </select>
       <button class="btn-add" onclick="addCal()" style="background:var(--cal);color:white">Ajouter</button>
     </div>
   </div>
-
   <div class="log-list" id="cal-log"></div>
 </div>
 </div>
@@ -634,42 +357,29 @@ select.inp { cursor: pointer; }
 <header>
   <div class="header-row">
     <div class="app-title" style="font-size:20px">💪 Sport</div>
-    <div class="date-pill"></div>
   </div>
 </header>
-
 <div class="section">
   <div style="text-align:center;padding:16px 0 24px;">
     <div style="font-family:'Syne',sans-serif;font-size:56px;font-weight:800;color:var(--sport);line-height:1" id="sport-total">0</div>
     <div style="font-size:14px;color:var(--muted)">minutes d'activité</div>
     <div style="margin-top:8px;font-size:13px;color:var(--muted)">🔥 <span id="sport-kcal-burned">0</span> kcal brûlées</div>
   </div>
-
   <div class="input-card">
     <div class="input-card-header">
-      <div class="input-card-icon" style="background:rgba(110,231,183,0.15)">🏋️</div>
-      <div>
-        <div class="input-card-title">Ajouter une séance</div>
-        <div class="input-card-sub">Type + durée</div>
-      </div>
+      <div class="input-card-icon" style="background:rgba(74,222,128,0.15)">🏋️</div>
+      <div><div class="input-card-title">Ajouter une séance</div><div class="input-card-sub">Type + durée</div></div>
     </div>
     <div class="row-inputs" style="margin-bottom:8px">
       <select class="inp" id="sport-type">
-        <option>🏃 Course</option>
-        <option>🏋️ Musculation</option>
-        <option>🚴 Vélo</option>
-        <option>🧘 Yoga</option>
-        <option>🏊 Natation</option>
-        <option>⚽ Football</option>
-        <option>🥊 Boxe</option>
-        <option>🚶 Marche</option>
-        <option>Autre</option>
+        <option>🏃 Course</option><option>🏋️ Musculation</option><option>🚴 Vélo</option>
+        <option>🧘 Yoga</option><option>🏊 Natation</option><option>⚽ Football</option>
+        <option>🥊 Boxe</option><option>🚶 Marche</option><option>🤸 Gymnastique</option><option>Autre</option>
       </select>
       <input class="inp" id="sport-min" type="number" placeholder="min" style="flex:0.6">
     </div>
     <button class="btn-add" onclick="addSport()" style="background:var(--sport);color:#001a10;width:100%">Ajouter la séance</button>
   </div>
-
   <div class="log-list" id="sport-log"></div>
 </div>
 </div>
@@ -681,16 +391,16 @@ select.inp { cursor: pointer; }
     <div class="app-title" style="font-size:20px">💧 Hydratation</div>
   </div>
 </header>
-
 <div class="section">
+  <div id="ramadan-water-tip" style="display:none;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:var(--water)">
+    💧 Ramadan : bois entre Maghreb et Fajr. Objectif 2L dans cette fenêtre.
+  </div>
   <div style="text-align:center;padding:16px 0;">
     <div style="font-family:'Syne',sans-serif;font-size:72px;font-weight:800;color:var(--water);line-height:1" id="water-count">0</div>
     <div style="font-size:14px;color:var(--muted)">verres sur <span id="water-goal-disp">8</span></div>
     <div style="margin-top:12px;font-size:13px;color:var(--muted)" id="water-ml">0 ml</div>
   </div>
-
   <div class="water-visual" id="water-drops"></div>
-
   <div style="margin-top:20px">
     <div class="section-title" style="margin-bottom:12px">Ajouter</div>
     <div class="water-btns">
@@ -699,7 +409,6 @@ select.inp { cursor: pointer; }
       <div class="water-btn" onclick="addWater(4)">+4 🍶<br><span style="font-size:10px;opacity:0.6">1L</span></div>
     </div>
   </div>
-
   <div style="margin-top:20px">
     <div class="section-title" style="margin-bottom:10px">Objectif quotidien</div>
     <div class="row-inputs">
@@ -707,8 +416,7 @@ select.inp { cursor: pointer; }
       <button class="btn-add" onclick="setWaterGoal()" style="background:var(--water);color:#001020">Définir</button>
     </div>
   </div>
-
-  <button onclick="resetWater()" style="margin-top:16px;width:100%;background:none;border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--muted);font-family:'DM Sans',sans-serif;cursor:pointer;font-size:13px;">Réinitialiser aujourd'hui</button>
+  <button onclick="resetWater()" style="margin-top:16px;width:100%;background:none;border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--muted);font-family:'DM Sans',sans-serif;cursor:pointer;font-size:13px;">Réinitialiser</button>
 </div>
 </div>
 
@@ -719,21 +427,16 @@ select.inp { cursor: pointer; }
     <div class="app-title" style="font-size:20px">😴 Sommeil</div>
   </div>
 </header>
-
 <div class="section">
   <div style="text-align:center;padding:16px 0 24px;">
     <div style="font-family:'Syne',sans-serif;font-size:72px;font-weight:800;color:var(--sleep);line-height:1" id="sleep-display">-</div>
     <div style="font-size:14px;color:var(--muted)">heures cette nuit</div>
     <div style="margin-top:8px;font-size:13px;" id="sleep-quality-disp"></div>
   </div>
-
   <div class="input-card">
     <div class="input-card-header">
-      <div class="input-card-icon" style="background:rgba(244,114,182,0.15)">🌙</div>
-      <div>
-        <div class="input-card-title">Enregistrer le sommeil</div>
-        <div class="input-card-sub">Glisse pour ajuster</div>
-      </div>
+      <div class="input-card-icon" style="background:rgba(167,139,250,0.15)">🌙</div>
+      <div><div class="input-card-title">Enregistrer le sommeil</div><div class="input-card-sub">Glisse pour ajuster</div></div>
     </div>
     <div class="sleep-row">
       <input type="range" class="slider" id="sleep-slider" min="1" max="12" step="0.5" value="7" oninput="updateSleepSlider()">
@@ -742,420 +445,481 @@ select.inp { cursor: pointer; }
     <div style="text-align:center;margin-top:8px;font-size:20px" id="sleep-emoji-display">😊</div>
     <button class="btn-add" onclick="saveSleep()" style="background:var(--sleep);color:white;width:100%;margin-top:14px">Enregistrer</button>
   </div>
-
   <div class="section-hd" style="margin-top:16px"><div class="section-title">Historique</div></div>
   <div class="log-list" id="sleep-log"></div>
 </div>
 </div>
 
+<!-- TAB: IBADAH -->
+<div class="tab-content" id="tab-ibadah">
+<header>
+  <div class="header-row">
+    <div class="app-title" style="font-size:20px">🕌 Ibadah</div>
+    <div class="date-pill" id="ibadah-date"></div>
+  </div>
+</header>
+<div class="section">
+
+  <!-- Score ibadah -->
+  <div style="text-align:center;padding:16px 0 20px;">
+    <div style="font-family:'Syne',sans-serif;font-size:56px;font-weight:800;color:var(--islam);line-height:1" id="ibadah-score-big">0</div>
+    <div style="font-size:14px;color:var(--muted)">points aujourd'hui</div>
+  </div>
+
+  <!-- Prières du jour -->
+  <div class="input-card">
+    <div class="input-card-header">
+      <div class="input-card-icon" style="background:rgba(212,168,67,0.15)">🙏</div>
+      <div><div class="input-card-title">Prières du jour</div><div class="input-card-sub">Coche les prières accomplies</div></div>
+    </div>
+    <div id="prayer-checklist"></div>
+  </div>
+
+  <!-- Sunnah & extra -->
+  <div class="input-card">
+    <div class="input-card-header">
+      <div class="input-card-icon" style="background:rgba(74,222,128,0.15)">✨</div>
+      <div><div class="input-card-title">Actes supplémentaires</div><div class="input-card-sub">Sunnah et bonnes actions</div></div>
+    </div>
+    <div id="extra-checklist"></div>
+  </div>
+
+  <!-- Paramètres -->
+  <div class="input-card">
+    <div class="input-card-header">
+      <div class="input-card-icon" style="background:rgba(212,168,67,0.15)">⚙️</div>
+      <div><div class="input-card-title">Paramètres</div><div class="input-card-sub">Ville & mode Ramadan</div></div>
+    </div>
+    <div class="toggle-row">
+      <div><div class="toggle-label">🌙 Mode Ramadan</div><div class="toggle-sub">Active le suivi du jeûne</div></div>
+      <label class="toggle"><input type="checkbox" id="toggle-ramadan" onchange="toggleRamadan()"><span class="toggle-slider"></span></label>
+    </div>
+    <div style="margin-top:12px">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Ville (pour les horaires de prière)</div>
+      <div class="row-inputs">
+        <select class="inp" id="city-select" onchange="saveCity()">
+          <option value="paris">Paris</option>
+          <option value="lyon">Lyon</option>
+          <option value="marseille">Marseille</option>
+          <option value="toulouse">Toulouse</option>
+          <option value="nice">Nice</option>
+          <option value="nantes">Nantes</option>
+          <option value="strasbourg">Strasbourg</option>
+          <option value="bordeaux">Bordeaux</option>
+          <option value="lille">Lille</option>
+          <option value="rennes">Rennes</option>
+          <option value="casablanca">Casablanca</option>
+          <option value="rabat">Rabat</option>
+          <option value="alger">Alger</option>
+          <option value="tunis">Tunis</option>
+          <option value="dubai">Dubaï</option>
+          <option value="london">Londres</option>
+          <option value="bruxelles">Bruxelles</option>
+        </select>
+        <button class="btn-add" onclick="loadPrayerTimes()" style="background:var(--islam);color:#1a0e00">Actualiser</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- TAB: BILAN -->
+<div class="tab-content" id="tab-bilan">
+<header>
+  <div class="header-row">
+    <div class="app-title" style="font-size:20px">📊 Bilan</div>
+  </div>
+</header>
+<div class="section">
+  <div class="bilan-tabs">
+    <div class="bilan-tab active" onclick="setBilanPeriod(7,this)">7 jours</div>
+    <div class="bilan-tab" onclick="setBilanPeriod(14,this)">14 jours</div>
+    <div class="bilan-tab" onclick="setBilanPeriod(30,this)">30 jours</div>
+  </div>
+  <div class="stat-summary" id="bilan-summary"></div>
+  <div class="bilan-chart-wrap">
+    <div class="bilan-chart-title"><span style="color:var(--cal)">🔥</span> Calories — <span id="chart-period-cal">7</span> jours</div>
+    <canvas id="chart-cal" style="width:100%;height:120px;display:block;"></canvas>
+  </div>
+  <div class="bilan-chart-wrap">
+    <div class="bilan-chart-title"><span style="color:var(--sport)">💪</span> Sport (min) — <span id="chart-period-sport">7</span> jours</div>
+    <canvas id="chart-sport" style="width:100%;height:120px;display:block;"></canvas>
+  </div>
+  <div class="bilan-chart-wrap">
+    <div class="bilan-chart-title"><span style="color:var(--water)">💧</span> Eau (verres) — <span id="chart-period-water">7</span> jours</div>
+    <canvas id="chart-water" style="width:100%;height:120px;display:block;"></canvas>
+  </div>
+  <div class="bilan-chart-wrap">
+    <div class="bilan-chart-title"><span style="color:var(--sleep)">😴</span> Sommeil (h) — <span id="chart-period-sleep">7</span> jours</div>
+    <canvas id="chart-sleep" style="width:100%;height:120px;display:block;"></canvas>
+  </div>
+  <div class="bilan-chart-wrap">
+    <div class="bilan-chart-title"><span style="color:var(--islam)">🕌</span> Ibadah (pts) — <span id="chart-period-ibadah">7</span> jours</div>
+    <canvas id="chart-ibadah" style="width:100%;height:120px;display:block;"></canvas>
+  </div>
+  <div class="section-hd" style="margin-top:8px"><div class="section-title">🩺 Analyse médicale & spirituelle</div></div>
+  <div id="medical-conclusions"></div>
+</div>
+</div>
+
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
-  <button class="nav-btn active" onclick="switchTab('home')">
-    <div class="nav-btn-icon">🏠</div>
-    <div class="nav-btn-label">Accueil</div>
-  </button>
-  <button class="nav-btn" onclick="switchTab('calories')">
-    <div class="nav-btn-icon">🔥</div>
-    <div class="nav-btn-label">Calories</div>
-  </button>
-  <button class="nav-btn" onclick="switchTab('sport')">
-    <div class="nav-btn-icon">💪</div>
-    <div class="nav-btn-label">Sport</div>
-  </button>
-  <button class="nav-btn" onclick="switchTab('water')">
-    <div class="nav-btn-icon">💧</div>
-    <div class="nav-btn-label">Eau</div>
-  </button>
-  <button class="nav-btn" onclick="switchTab('sleep')">
-    <div class="nav-btn-icon">😴</div>
-    <div class="nav-btn-label">Sommeil</div>
-  </button>
+  <button class="nav-btn active" onclick="switchTab('home')"><div class="nav-btn-icon">🏠</div><div class="nav-btn-label">Accueil</div></button>
+  <button class="nav-btn" onclick="switchTab('calories')"><div class="nav-btn-icon">🔥</div><div class="nav-btn-label">Calories</div></button>
+  <button class="nav-btn" onclick="switchTab('sport')"><div class="nav-btn-icon">💪</div><div class="nav-btn-label">Sport</div></button>
+  <button class="nav-btn" onclick="switchTab('water')"><div class="nav-btn-icon">💧</div><div class="nav-btn-label">Eau</div></button>
+  <button class="nav-btn" onclick="switchTab('ibadah')"><div class="nav-btn-icon">🕌</div><div class="nav-btn-label">Ibadah</div></button>
+  <button class="nav-btn" onclick="switchTab('bilan')"><div class="nav-btn-icon">📊</div><div class="nav-btn-label">Bilan</div></button>
 </div>
 
 <script>
-// STATE
+// ── STATE ──
 let state = JSON.parse(localStorage.getItem('wellify') || '{}');
 const todayKey = new Date().toISOString().split('T')[0];
+let prayerTimes = null;
+let bilanPeriod = 7;
 
 function getToday() {
-  if (!state[todayKey]) state[todayKey] = { cal: [], sport: [], water: 0, sleep: null };
+  if (!state[todayKey]) state[todayKey] = { cal:[], sport:[], water:0, sleep:null, ibadah:{}, extra:{} };
+  if (!state[todayKey].ibadah) state[todayKey].ibadah = {};
+  if (!state[todayKey].extra) state[todayKey].extra = {};
   return state[todayKey];
 }
-
 function save() { localStorage.setItem('wellify', JSON.stringify(state)); }
 
-// INIT
-function init() {
-  const now = new Date();
-  const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  const months = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
-  const dateStr = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}`;
-  document.querySelectorAll('#dateDisplay, #cal-date').forEach(el => el && (el.textContent = dateStr));
+// ── PRAYER DATA ──
+const PRAYER_NAMES = ['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+const PRAYER_LABELS = ['Fajr','Dhuhr','Asr','Maghreb','Isha'];
 
-  const h = now.getHours();
-  const greet = h < 12 ? 'Bonjour 🌅' : h < 18 ? 'Bon après-midi ☀️' : 'Bonsoir 🌙';
-  const el = document.getElementById('greeting');
-  if (el) el.textContent = greet + ' — ' + dateStr;
+// City coordinates for prayer calculation
+const CITIES = {
+  paris:{lat:48.8566,lng:2.3522,tz:1},lyon:{lat:45.7640,lng:4.8357,tz:1},
+  marseille:{lat:43.2965,lng:5.3698,tz:1},toulouse:{lat:43.6047,lng:1.4442,tz:1},
+  nice:{lat:43.7102,lng:7.2620,tz:1},nantes:{lat:47.2184,lng:-1.5536,tz:1},
+  strasbourg:{lat:48.5734,lng:7.7521,tz:1},bordeaux:{lat:44.8378,lng:-0.5792,tz:1},
+  lille:{lat:50.6292,lng:3.0573,tz:1},rennes:{lat:48.1173,lng:-1.6778,tz:1},
+  casablanca:{lat:33.5731,lng:-7.5898,tz:1},rabat:{lat:33.9716,lng:-6.8498,tz:1},
+  alger:{lat:36.7372,lng:3.0865,tz:1},tunis:{lat:36.8190,lng:10.1658,tz:1},
+  dubai:{lat:25.2048,lng:55.2708,tz:4},london:{lat:51.5074,lng:-0.1278,tz:0},
+  bruxelles:{lat:50.8503,lng:4.3517,tz:1}
+};
 
-  updateAll();
-  renderWaterDrops();
-  updateSleepSlider();
+function saveCity() {
+  const city = document.getElementById('city-select').value;
+  localStorage.setItem('wellify-city', city);
 }
 
-function updateAll() {
-  const d = getToday();
-  const calGoal = parseInt(localStorage.getItem('calGoal') || '2000');
-  const waterGoal = parseInt(localStorage.getItem('waterGoal') || '8');
+function getCity() {
+  return localStorage.getItem('wellify-city') || 'paris';
+}
 
-  // Totals
-  const calTotal = d.cal.reduce((s,x) => s + x.kcal, 0);
-  const sportTotal = d.sport.reduce((s,x) => s + x.min, 0);
-  const sportKcal = Math.round(sportTotal * 7);
+// Prayer time calculation (simplified Umm al-Qura method)
+function calcPrayerTimes(date, city) {
+  const c = CITIES[city] || CITIES['paris'];
+  const lat = c.lat * Math.PI / 180;
+  const lng = c.lng;
+  const tz = c.tz;
 
-  // Home quick stats
-  document.getElementById('qs-cal').textContent = calTotal;
-  document.getElementById('qs-cal-goal').textContent = calGoal;
-  document.getElementById('qs-sport').textContent = sportTotal;
-  document.getElementById('qs-water').textContent = d.water;
-  document.getElementById('qs-water-goal').textContent = waterGoal;
-  document.getElementById('qs-sleep').textContent = d.sleep ? d.sleep + 'h' : '-';
-
-  // Bars
-  document.getElementById('bar-cal').style.width = Math.min(100, (calTotal/calGoal)*100) + '%';
-  document.getElementById('bar-sport').style.width = Math.min(100, (sportTotal/60)*100) + '%';
-  document.getElementById('bar-water').style.width = Math.min(100, (d.water/waterGoal)*100) + '%';
-  document.getElementById('bar-sleep').style.width = d.sleep ? Math.min(100, (d.sleep/8)*100) + '%' : '0%';
-
-  // Calories page
-  document.getElementById('cal-total').textContent = calTotal;
-  document.getElementById('cal-prog-bar').style.width = Math.min(100, (calTotal/calGoal)*100) + '%';
-  document.getElementById('cal-goal-label').textContent = `Objectif: ${calGoal} kcal`;
-  document.getElementById('cal-remaining').textContent = Math.max(0, calGoal - calTotal) + ' restantes';
-
-  // Sport page
-  document.getElementById('sport-total').textContent = sportTotal;
-  document.getElementById('sport-kcal-burned').textContent = sportKcal;
-
-  // Water page
-  document.getElementById('water-count').textContent = d.water;
-  document.getElementById('water-goal-disp').textContent = waterGoal;
-  document.getElementById('water-ml').textContent = (d.water * 250) + ' ml';
-
-  // Sleep
-  document.getElementById('sleep-display').textContent = d.sleep ? d.sleep + 'h' : '-';
-  if (d.sleep) {
-    const q = d.sleep >= 7 ? '😊 Bon sommeil' : d.sleep >= 5 ? '😐 Sommeil moyen' : '😩 Sommeil insuffisant';
-    document.getElementById('sleep-quality-disp').textContent = q;
+  // DST detection for France
+  let tzOffset = tz;
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  // Approximate DST: last Sunday of March to last Sunday of October
+  if (city !== 'dubai' && city !== 'london') {
+    if ((month > 3 && month < 10) || (month === 3 && day >= 25) || (month === 10 && day < 25)) {
+      tzOffset = tz + 1;
+    }
   }
 
-  // Score
-  let score = 0;
-  if (calTotal > 0) score += 25;
-  if (sportTotal >= 30) score += 25;
-  else if (sportTotal > 0) score += 12;
-  if (d.water >= waterGoal) score += 25;
-  else if (d.water > 0) score += Math.round((d.water/waterGoal)*25);
-  if (d.sleep >= 7) score += 25;
-  else if (d.sleep) score += 12;
+  const JD = julianDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+  const D = JD - 2451545.0;
+  const g = (357.529 + 0.98560028 * D) * Math.PI / 180;
+  const q = (280.459 + 0.98564736 * D) % 360;
+  const L = (q + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * Math.PI / 180;
+  const e = (23.439 - 0.00000036 * D) * Math.PI / 180;
+  const RA = Math.atan2(Math.cos(e) * Math.sin(L), Math.cos(L)) * 180 / Math.PI / 15;
+  const d = Math.asin(Math.sin(e) * Math.sin(L));
+  const EqT = q / 15 - ((RA % 24 + 24) % 24);
+  const transit = 12 + tzOffset - lng / 15 - EqT;
 
-  document.getElementById('scoreNum').textContent = score;
-  document.getElementById('scoreRing').style.strokeDashoffset = 207 - (score/100)*207;
+  function prayerAngle(angle) {
+    const cosH = (Math.sin(angle * Math.PI / 180) - Math.sin(lat) * Math.sin(d)) / (Math.cos(lat) * Math.cos(d));
+    if (Math.abs(cosH) > 1) return null;
+    return Math.acos(cosH) * 180 / Math.PI / 15;
+  }
 
-  const titles = ['Commence ta journée !','Continue comme ça 👍','Bonne progression 💪','Presque parfait 🌟','Journée parfaite 🎉'];
-  const subs = ['Ajoute tes premières activités','Tu es sur la bonne voie','Plus que quelques efforts','Encore un petit effort','Tous tes objectifs atteints !'];
-  const idx = Math.floor(score/25);
-  document.getElementById('scoreTitle').textContent = titles[Math.min(idx, 4)];
-  document.getElementById('scoreSub').textContent = subs[Math.min(idx, 4)];
+  function asrTime(factor) {
+    const tanA = 1 / (factor + Math.tan(Math.abs(lat - d)));
+    const angle = Math.atan(tanA) * 180 / Math.PI;
+    return prayerAngle(90 - angle);
+  }
 
-  renderLogs();
-  renderWaterDrops();
-  renderRecent();
+  const fajrH = prayerAngle(-18);
+  const sunriseH = prayerAngle(-0.833);
+  const asrH = asrTime(1);
+  const maghribH = prayerAngle(-0.833);
+  const ishaH = prayerAngle(-17);
+
+  function toTime(h) {
+    if (h === null) return '--:--';
+    const total = h;
+    const hh = Math.floor(total);
+    const mm = Math.round((total - hh) * 60);
+    return hh.toString().padStart(2,'0') + ':' + mm.toString().padStart(2,'0');
+  }
+
+  return {
+    Fajr: toTime(transit - fajrH),
+    Sunrise: toTime(transit - sunriseH),
+    Dhuhr: toTime(transit + 0.033),
+    Asr: toTime(transit + asrH),
+    Maghrib: toTime(transit + maghribH),
+    Isha: toTime(transit + ishaH),
+  };
 }
 
-// FOOD DATABASE (kcal pour 100g)
-const foodDB = [
-  // 🥩 VIANDES
-  { name: 'Poulet blanc grillé', kcal100: 165 },
-  { name: 'Poulet cuisse rôtie', kcal100: 209 },
-  { name: 'Poulet entier rôti', kcal100: 239 },
-  { name: 'Dinde blanc', kcal100: 135 },
-  { name: 'Bœuf haché 5%', kcal100: 137 },
-  { name: 'Bœuf haché 15%', kcal100: 215 },
-  { name: 'Bœuf haché 20%', kcal100: 254 },
-  { name: 'Steak bœuf grillé', kcal100: 187 },
-  { name: 'Entrecôte bœuf', kcal100: 273 },
-  { name: 'Côte de bœuf', kcal100: 291 },
-  { name: 'Veau escalope', kcal100: 105 },
-  { name: 'Agneau côtelette', kcal100: 294 },
-  { name: 'Agneau épaule', kcal100: 268 },
-  { name: 'Agneau gigot', kcal100: 217 },
-  { name: 'Merguez', kcal100: 330 },
-  { name: 'Saucisse de poulet', kcal100: 215 },
-  { name: 'Kefta bœuf', kcal100: 243 },
-  { name: 'Foie de veau', kcal100: 135 },
-  { name: 'Foie de poulet', kcal100: 119 },
+function julianDate(y, m, d) {
+  if (m <= 2) { y -= 1; m += 12; }
+  const A = Math.floor(y / 100);
+  const B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + B - 1524.5;
+}
 
-  // 🐟 POISSONS & FRUITS DE MER
-  { name: 'Saumon grillé', kcal100: 208 },
-  { name: 'Saumon fumé', kcal100: 172 },
-  { name: 'Thon en boîte (naturel)', kcal100: 116 },
-  { name: 'Thon en boîte (huile)', kcal100: 198 },
-  { name: 'Thon grillé', kcal100: 144 },
-  { name: 'Cabillaud', kcal100: 82 },
-  { name: 'Lieu noir', kcal100: 90 },
-  { name: 'Tilapia', kcal100: 96 },
-  { name: 'Bar / Loup', kcal100: 97 },
-  { name: 'Sardine grillée', kcal100: 208 },
-  { name: 'Sardine en boîte', kcal100: 185 },
-  { name: 'Maquereau grillé', kcal100: 205 },
-  { name: 'Crevettes cuites', kcal100: 99 },
-  { name: 'Calamars', kcal100: 92 },
-  { name: 'Moules cuites', kcal100: 86 },
+function timeToMinutes(t) {
+  if (!t || t === '--:--') return 0;
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
 
-  // 🥚 ŒUFS & LAITAGES
-  { name: 'Œuf entier', kcal100: 155 },
-  { name: 'Blanc d\'œuf', kcal100: 52 },
-  { name: 'Œuf à la coque', kcal100: 155 },
-  { name: 'Omelette nature', kcal100: 154 },
-  { name: 'Lait entier', kcal100: 61 },
-  { name: 'Lait demi-écrémé', kcal100: 46 },
-  { name: 'Lait écrémé', kcal100: 34 },
-  { name: 'Yaourt nature', kcal100: 59 },
-  { name: 'Yaourt grec', kcal100: 97 },
-  { name: 'Fromage blanc 0%', kcal100: 45 },
-  { name: 'Fromage blanc 3%', kcal100: 68 },
-  { name: 'Skyr nature', kcal100: 63 },
-  { name: 'Camembert', kcal100: 297 },
-  { name: 'Emmental', kcal100: 382 },
-  { name: 'Gruyère', kcal100: 413 },
-  { name: 'Feta', kcal100: 264 },
-  { name: 'Mozzarella', kcal100: 280 },
-  { name: 'Parmesan', kcal100: 431 },
-  { name: 'Beurre', kcal100: 717 },
-  { name: 'Crème fraîche 30%', kcal100: 292 },
-  { name: 'Whey protéine', kcal100: 370 },
+function minutesToTime(m) {
+  const h = Math.floor(m / 60) % 24;
+  const min = m % 60;
+  return h.toString().padStart(2,'0') + ':' + min.toString().padStart(2,'0');
+}
 
-  // 🍚 FÉCULENTS & CÉRÉALES
-  { name: 'Riz blanc cuit', kcal100: 130 },
-  { name: 'Riz brun cuit', kcal100: 111 },
-  { name: 'Riz basmati cuit', kcal100: 121 },
-  { name: 'Pâtes cuites', kcal100: 131 },
-  { name: 'Pâtes complètes cuites', kcal100: 124 },
-  { name: 'Spaghetti cuits', kcal100: 131 },
-  { name: 'Pain blanc', kcal100: 265 },
-  { name: 'Pain complet', kcal100: 247 },
-  { name: 'Baguette', kcal100: 270 },
-  { name: 'Pain de mie', kcal100: 264 },
-  { name: 'Pain pita', kcal100: 275 },
-  { name: 'Pomme de terre cuite', kcal100: 77 },
-  { name: 'Pomme de terre vapeur', kcal100: 72 },
-  { name: 'Frites', kcal100: 312 },
-  { name: 'Patate douce cuite', kcal100: 90 },
-  { name: 'Flocons d\'avoine', kcal100: 368 },
-  { name: 'Muesli', kcal100: 370 },
-  { name: 'Corn flakes', kcal100: 357 },
-  { name: 'Quinoa cuit', kcal100: 120 },
-  { name: 'Boulgour cuit', kcal100: 83 },
-  { name: 'Semoule cuite', kcal100: 112 },
-  { name: 'Couscous cuit', kcal100: 112 },
-  { name: 'Polenta cuite', kcal100: 70 },
+function loadPrayerTimes() {
+  const city = getCity();
+  const cityEl = document.getElementById('city-select');
+  if (cityEl) cityEl.value = city;
+  prayerTimes = calcPrayerTimes(new Date(), city);
+  renderPrayerBanner();
+  renderPrayerChecklist();
+  updateRamadanBanner();
+}
 
-  // 🥗 LÉGUMINEUSES
-  { name: 'Lentilles cuites', kcal100: 116 },
-  { name: 'Lentilles corail cuites', kcal100: 100 },
-  { name: 'Pois chiches cuits', kcal100: 164 },
-  { name: 'Haricots rouges cuits', kcal100: 127 },
-  { name: 'Haricots blancs cuits', kcal100: 139 },
-  { name: 'Fèves cuites', kcal100: 110 },
-  { name: 'Pois cassés cuits', kcal100: 118 },
-  { name: 'Edamame', kcal100: 122 },
-  { name: 'Tofu', kcal100: 76 },
+function renderPrayerBanner() {
+  if (!prayerTimes) return;
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const prayers = [
+    { name:'Fajr', label:'Fajr', time:prayerTimes.Fajr },
+    { name:'Dhuhr', label:'Dhuhr', time:prayerTimes.Dhuhr },
+    { name:'Asr', label:'Asr', time:prayerTimes.Asr },
+    { name:'Maghrib', label:'Maghreb', time:prayerTimes.Maghrib },
+    { name:'Isha', label:'Isha', time:prayerTimes.Isha },
+  ];
 
-  // 🥦 LÉGUMES
-  { name: 'Tomate', kcal100: 18 },
-  { name: 'Concombre', kcal100: 15 },
-  { name: 'Carotte', kcal100: 41 },
-  { name: 'Brocoli', kcal100: 34 },
-  { name: 'Épinards', kcal100: 23 },
-  { name: 'Courgette', kcal100: 17 },
-  { name: 'Aubergine', kcal100: 25 },
-  { name: 'Poivron rouge', kcal100: 31 },
-  { name: 'Poivron vert', kcal100: 20 },
-  { name: 'Oignon', kcal100: 40 },
-  { name: 'Ail', kcal100: 149 },
-  { name: 'Champignon', kcal100: 22 },
-  { name: 'Chou-fleur', kcal100: 25 },
-  { name: 'Chou blanc', kcal100: 25 },
-  { name: 'Salade verte', kcal100: 15 },
-  { name: 'Maïs cuit', kcal100: 86 },
-  { name: 'Petits pois', kcal100: 81 },
-  { name: 'Haricots verts', kcal100: 35 },
-  { name: 'Céleri', kcal100: 16 },
-  { name: 'Radis', kcal100: 16 },
-  { name: 'Betterave', kcal100: 43 },
-  { name: 'Navet', kcal100: 28 },
-  { name: 'Artichaut', kcal100: 53 },
+  let nextIdx = prayers.findIndex(p => timeToMinutes(p.time) > nowMin);
+  if (nextIdx === -1) nextIdx = 0;
+  const next = prayers[nextIdx];
+  const nextMin = timeToMinutes(next.time);
+  const diffMin = nextIdx === 0 && timeToMinutes(prayers[0].time) <= nowMin
+    ? (24 * 60 - nowMin + nextMin) : nextMin - nowMin;
+  const h = Math.floor(diffMin / 60);
+  const m = diffMin % 60;
+  const countdownStr = h > 0 ? `Dans ${h}h${m.toString().padStart(2,'0')}` : `Dans ${m} min`;
 
-  // 🍎 FRUITS
-  { name: 'Banane', kcal100: 89 },
-  { name: 'Pomme', kcal100: 52 },
-  { name: 'Orange', kcal100: 47 },
-  { name: 'Fraise', kcal100: 32 },
-  { name: 'Raisin', kcal100: 69 },
-  { name: 'Mangue', kcal100: 60 },
-  { name: 'Avocat', kcal100: 160 },
-  { name: 'Kiwi', kcal100: 61 },
-  { name: 'Poire', kcal100: 57 },
-  { name: 'Pêche', kcal100: 39 },
-  { name: 'Abricot', kcal100: 48 },
-  { name: 'Cerise', kcal100: 63 },
-  { name: 'Pastèque', kcal100: 30 },
-  { name: 'Melon', kcal100: 34 },
-  { name: 'Ananas', kcal100: 50 },
-  { name: 'Grenade', kcal100: 83 },
-  { name: 'Figue fraîche', kcal100: 74 },
-  { name: 'Datte', kcal100: 282 },
-  { name: 'Figue sèche', kcal100: 249 },
-  { name: 'Raisin sec', kcal100: 299 },
-  { name: 'Citron', kcal100: 29 },
+  const nameEl = document.getElementById('next-prayer-name');
+  const timeEl = document.getElementById('next-prayer-time');
+  const cdEl = document.getElementById('prayer-countdown');
+  if (nameEl) nameEl.textContent = next.label;
+  if (timeEl) timeEl.textContent = next.time;
+  if (cdEl) cdEl.textContent = countdownStr;
 
-  // 🌰 OLÉAGINEUX
-  { name: 'Amandes', kcal100: 579 },
-  { name: 'Noix', kcal100: 654 },
-  { name: 'Noix de cajou', kcal100: 553 },
-  { name: 'Noisettes', kcal100: 628 },
-  { name: 'Cacahuètes', kcal100: 567 },
-  { name: 'Pistaches', kcal100: 562 },
-  { name: 'Graines de tournesol', kcal100: 584 },
-  { name: 'Graines de chia', kcal100: 486 },
-  { name: 'Graines de lin', kcal100: 534 },
-  { name: 'Tahini (purée sésame)', kcal100: 595 },
-  { name: 'Beurre de cacahuète', kcal100: 588 },
+  const grid = document.getElementById('prayer-grid');
+  if (grid) {
+    const currentIdx = nextIdx === 0 ? prayers.length - 1 : nextIdx - 1;
+    grid.innerHTML = prayers.map((p, i) => `
+      <div class="prayer-item ${i === nextIdx ? 'active' : ''}">
+        <div class="prayer-item-name">${p.label}</div>
+        <div class="prayer-item-time">${p.time}</div>
+      </div>`).join('');
+  }
+}
 
-  // 🫒 HUILES & GRAISSES
-  { name: 'Huile d\'olive', kcal100: 884 },
-  { name: 'Huile de tournesol', kcal100: 884 },
-  { name: 'Huile de coco', kcal100: 862 },
+function updateRamadanBanner() {
+  const isRamadan = localStorage.getItem('ramadan-mode') === '1';
+  const sec = document.getElementById('ramadan-section');
+  const calInfo = document.getElementById('ramadan-cal-info');
+  const waterTip = document.getElementById('ramadan-water-tip');
+  if (sec) sec.style.display = isRamadan ? 'block' : 'none';
+  if (calInfo) calInfo.style.display = isRamadan ? 'block' : 'none';
+  if (waterTip) waterTip.style.display = isRamadan ? 'block' : 'none';
 
-  // 🍯 SUCRES & CONDIMENTS
-  { name: 'Miel', kcal100: 304 },
-  { name: 'Sucre blanc', kcal100: 387 },
-  { name: 'Sucre roux', kcal100: 373 },
-  { name: 'Confiture', kcal100: 250 },
-  { name: 'Ketchup', kcal100: 112 },
-  { name: 'Mayonnaise', kcal100: 680 },
-  { name: 'Moutarde', kcal100: 66 },
-  { name: 'Sauce soja', kcal100: 53 },
-  { name: 'Harissa', kcal100: 50 },
-  { name: 'Chermoula', kcal100: 120 },
+  if (!isRamadan || !prayerTimes) return;
+  const suhoor = prayerTimes.Fajr;
+  const iftar = prayerTimes.Maghrib;
+  const s1 = document.getElementById('ram-suhoor');
+  const s2 = document.getElementById('ram-iftar');
+  if (s1) s1.textContent = suhoor;
+  if (s2) s2.textContent = iftar;
 
-  // 🥙 PLATS ORIENTAUX
-  { name: 'Couscous poulet (plat)', kcal100: 110 },
-  { name: 'Couscous agneau (plat)', kcal100: 130 },
-  { name: 'Tajine poulet citron', kcal100: 118 },
-  { name: 'Tajine agneau pruneaux', kcal100: 165 },
-  { name: 'Maklouba', kcal100: 155 },
-  { name: 'Chwarma poulet', kcal100: 220 },
-  { name: 'Chwarma viande', kcal100: 255 },
-  { name: 'Falafel', kcal100: 333 },
-  { name: 'Hummus', kcal100: 177 },
-  { name: 'Taboulé', kcal100: 105 },
-  { name: 'Fattoush', kcal100: 80 },
-  { name: 'Mhammara', kcal100: 220 },
-  { name: 'Brick à l\'œuf', kcal100: 230 },
-  { name: 'Pastilla poulet', kcal100: 265 },
-  { name: 'Rfissa', kcal100: 175 },
-  { name: 'Harira (soupe)', kcal100: 68 },
-  { name: 'Chorba', kcal100: 72 },
-  { name: 'Mlokhia', kcal100: 55 },
-  { name: 'Makroud', kcal100: 390 },
-  { name: 'Baklava', kcal100: 428 },
-  { name: 'Knafeh', kcal100: 384 },
-  { name: 'Loukoum', kcal100: 322 },
-  { name: 'Chebakia', kcal100: 450 },
-  { name: 'Sellou / Sfouf', kcal100: 490 },
-  { name: 'Msemen / Meloui', kcal100: 310 },
-  { name: 'Batbout', kcal100: 268 },
-  { name: 'Khobz (pain marocain)', kcal100: 265 },
-  { name: 'Shakshuka', kcal100: 95 },
-  { name: 'Ful medames', kcal100: 110 },
-  { name: 'Dolma', kcal100: 175 },
-  { name: 'Kebab (assiette)', kcal100: 218 },
-  { name: 'Riz pilaf', kcal100: 150 },
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const fajrMin = timeToMinutes(suhoor);
+  const maghribMin = timeToMinutes(iftar);
+  const isFasting = nowMin >= fajrMin && nowMin < maghribMin;
+  const cdEl = document.getElementById('ram-countdown');
+  const fillEl = document.getElementById('ram-fast-fill');
 
-  // 🍔 FAST FOOD
-  { name: 'Big Mac', kcal100: 257 },
-  { name: 'McChicken', kcal100: 240 },
-  { name: 'Nuggets x6 McDonald\'s', kcal100: 233 },
-  { name: 'Frites McDonald\'s (medium)', kcal100: 312 },
-  { name: 'McFlurry', kcal100: 185 },
-  { name: 'Whopper Burger King', kcal100: 253 },
-  { name: 'Burger King frites', kcal100: 295 },
-  { name: 'KFC Original (pilon)', kcal100: 231 },
-  { name: 'KFC Zinger Burger', kcal100: 255 },
-  { name: 'Kebab sandwich', kcal100: 235 },
-  { name: 'Tacos (format L)', kcal100: 210 },
-  { name: 'Pizza margherita', kcal100: 266 },
-  { name: 'Pizza pepperoni', kcal100: 298 },
-  { name: 'Pizza 4 fromages', kcal100: 316 },
-  { name: 'Hamburger classique', kcal100: 295 },
-  { name: 'Cheeseburger', kcal100: 305 },
-  { name: 'Hot-dog', kcal100: 290 },
-  { name: 'Sushi (nigiri)', kcal100: 130 },
-  { name: 'Maki California', kcal100: 158 },
+  if (isFasting) {
+    const remaining = maghribMin - nowMin;
+    const h = Math.floor(remaining / 60);
+    const m = remaining % 60;
+    if (cdEl) cdEl.textContent = `⏳ Iftar dans ${h}h${m.toString().padStart(2,'0')} min`;
+    const pct = ((nowMin - fajrMin) / (maghribMin - fajrMin)) * 100;
+    if (fillEl) fillEl.style.width = pct + '%';
+  } else if (nowMin < fajrMin) {
+    if (cdEl) cdEl.textContent = `🌅 Suhoor se termine à ${suhoor}`;
+    if (fillEl) fillEl.style.width = '0%';
+  } else {
+    if (cdEl) cdEl.textContent = `✅ Jeûne accompli aujourd'hui !`;
+    if (fillEl) fillEl.style.width = '100%';
+  }
+}
 
-  // 🥐 PLATS FRANÇAIS
-  { name: 'Quiche lorraine', kcal100: 295 },
-  { name: 'Gratin dauphinois', kcal100: 165 },
-  { name: 'Ratatouille', kcal100: 60 },
-  { name: 'Bœuf bourguignon', kcal100: 145 },
-  { name: 'Cassoulet', kcal100: 155 },
-  { name: 'Soupe à l\'oignon', kcal100: 67 },
-  { name: 'Croque-monsieur', kcal100: 286 },
-  { name: 'Omelette fromage', kcal100: 185 },
-  { name: 'Salade niçoise', kcal100: 135 },
-  { name: 'Crêpe nature', kcal100: 196 },
-  { name: 'Crêpe Nutella', kcal100: 305 },
-  { name: 'Galette bretonne', kcal100: 218 },
-  { name: 'Croissant', kcal100: 406 },
-  { name: 'Pain au chocolat', kcal100: 395 },
-  { name: 'Brioche', kcal100: 345 },
-  { name: 'Éclair au chocolat', kcal100: 295 },
-  { name: 'Tarte aux pommes', kcal100: 210 },
-  { name: 'Mousse au chocolat', kcal100: 188 },
-  { name: 'Crème brûlée', kcal100: 240 },
-  { name: 'Île flottante', kcal100: 130 },
+function toggleRamadan() {
+  const v = document.getElementById('toggle-ramadan').checked;
+  localStorage.setItem('ramadan-mode', v ? '1' : '0');
+  updateRamadanBanner();
+  showToast(v ? '🌙 Mode Ramadan activé' : 'Mode Ramadan désactivé');
+}
 
-  // 🍫 SNACKS & SUCRERIES
-  { name: 'Nutella', kcal100: 539 },
-  { name: 'Chocolat noir 70%', kcal100: 598 },
-  { name: 'Chocolat au lait', kcal100: 535 },
-  { name: 'Chocolat blanc', kcal100: 539 },
-  { name: 'Chips nature', kcal100: 536 },
-  { name: 'Chips paprika', kcal100: 530 },
-  { name: 'Biscuits Lu Petit Beurre', kcal100: 440 },
-  { name: 'Oreo', kcal100: 473 },
-  { name: 'Prince chocolat', kcal100: 455 },
-  { name: 'Kinder Bueno', kcal100: 547 },
-  { name: 'Twix', kcal100: 495 },
-  { name: 'Kit Kat', kcal100: 518 },
-  { name: 'Mars', kcal100: 449 },
-  { name: 'Snickers', kcal100: 488 },
-  { name: 'Bonbons Haribo', kcal100: 336 },
-
-  // 🥤 BOISSONS
-  { name: 'Jus d\'orange (100%)', kcal100: 45 },
-  { name: 'Jus de pomme', kcal100: 47 },
-  { name: 'Coca-Cola', kcal100: 42 },
-  { name: 'Coca-Cola Zero', kcal100: 1 },
-  { name: 'Limonade', kcal100: 38 },
-  { name: 'Lait chocolaté', kcal100: 70 },
-  { name: 'Smoothie banane', kcal100: 80 },
-  { name: 'Café (sans sucre)', kcal100: 2 },
-  { name: 'Thé (sans sucre)', kcal100: 1 },
-  { name: 'Thé à la menthe', kcal100: 8 },
+// ── IBADAH ──
+const PRAYERS_LIST = [
+  { id:'fajr', name:'Fajr', sub:'Prière de l\'aube', pts:20 },
+  { id:'dhuhr', name:'Dhuhr', sub:'Prière de midi', pts:15 },
+  { id:'asr', name:'Asr', sub:'Prière de l\'après-midi', pts:15 },
+  { id:'maghrib', name:'Maghreb', sub:'Prière du coucher', pts:20 },
+  { id:'isha', name:'Isha', sub:'Prière du soir', pts:15 },
 ];
 
+const EXTRA_LIST = [
+  { id:'quran', name:'Lecture du Coran', sub:'Au moins 10 min', pts:15 },
+  { id:'dhikr', name:'Dhikr (Subhanallah...)', sub:'33x après chaque prière', pts:10 },
+  { id:'fasting', name:'Jeûne volontaire', sub:'Lundi/Jeudi ou autre', pts:20 },
+  { id:'sadaqa', name:'Sadaqa', sub:'Don ou bonne action', pts:15 },
+  { id:'sunnah', name:'Prières Sunnah', sub:'Rawatib 12 rak\'at', pts:10 },
+  { id:'istikhara', name:'Duaa / Istighfar', sub:'Invocations du matin/soir', pts:10 },
+];
+
+function renderPrayerChecklist() {
+  const d = getToday();
+  const el = document.getElementById('prayer-checklist');
+  if (!el) return;
+  el.innerHTML = PRAYERS_LIST.map(p => {
+    const checked = d.ibadah[p.id];
+    const pt = prayerTimes ? prayerTimes[p.id === 'maghrib' ? 'Maghrib' : p.id.charAt(0).toUpperCase() + p.id.slice(1)] || '' : '';
+    return `
+    <div class="ibadah-check" onclick="toggleIbadah('${p.id}')">
+      <div class="ibadah-checkbox ${checked ? 'checked' : ''}">
+        ${checked ? '<span class="ibadah-check-icon">✓</span>' : ''}
+      </div>
+      <div class="ibadah-text">
+        <div class="ibadah-name">${p.name} ${pt ? '<span style="color:var(--muted);font-size:11px">'+pt+'</span>' : ''}</div>
+        <div class="ibadah-sub">${p.sub}</div>
+      </div>
+      <div class="ibadah-pts">+${p.pts}pts</div>
+    </div>`;
+  }).join('');
+
+  const el2 = document.getElementById('extra-checklist');
+  if (el2) {
+    el2.innerHTML = EXTRA_LIST.map(p => {
+      const checked = d.extra[p.id];
+      return `
+      <div class="ibadah-check" onclick="toggleExtra('${p.id}')">
+        <div class="ibadah-checkbox ${checked ? 'checked' : ''}">
+          ${checked ? '<span class="ibadah-check-icon">✓</span>' : ''}
+        </div>
+        <div class="ibadah-text">
+          <div class="ibadah-name">${p.name}</div>
+          <div class="ibadah-sub">${p.sub}</div>
+        </div>
+        <div class="ibadah-pts">+${p.pts}pts</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function toggleIbadah(id) {
+  const d = getToday();
+  d.ibadah[id] = !d.ibadah[id];
+  save(); updateAll(); renderPrayerChecklist();
+  const p = PRAYERS_LIST.find(x => x.id === id);
+  if (d.ibadah[id]) showToast(`🕌 ${p.name} accomplie !`);
+}
+
+function toggleExtra(id) {
+  const d = getToday();
+  d.extra[id] = !d.extra[id];
+  save(); updateAll(); renderPrayerChecklist();
+  const p = EXTRA_LIST.find(x => x.id === id);
+  if (d.extra[id]) showToast(`✨ ${p.name} enregistré !`);
+}
+
+function getIbadahScore(d) {
+  let score = 0;
+  PRAYERS_LIST.forEach(p => { if (d.ibadah && d.ibadah[p.id]) score += p.pts; });
+  EXTRA_LIST.forEach(p => { if (d.extra && d.extra[p.id]) score += p.pts; });
+  return score;
+}
+
+function getPrayerCount(d) {
+  return PRAYERS_LIST.filter(p => d.ibadah && d.ibadah[p.id]).length;
+}
+
+// ── FOOD DATABASE ──
+const foodDB = [
+  {name:'Poulet blanc grillé ✅',kcal100:165},{name:'Poulet cuisse rôtie ✅',kcal100:209},{name:'Poulet entier rôti ✅',kcal100:239},
+  {name:'Dinde blanc ✅',kcal100:135},{name:'Bœuf haché 5% ✅',kcal100:137},{name:'Bœuf haché 15% ✅',kcal100:215},
+  {name:'Steak bœuf grillé ✅',kcal100:187},{name:'Entrecôte bœuf ✅',kcal100:273},{name:'Agneau côtelette ✅',kcal100:294},
+  {name:'Agneau gigot ✅',kcal100:217},{name:'Veau escalope ✅',kcal100:105},{name:'Merguez halal ✅',kcal100:330},
+  {name:'Saucisse de poulet halal ✅',kcal100:215},{name:'Kefta bœuf ✅',kcal100:243},{name:'Foie de veau ✅',kcal100:135},
+  {name:'Saumon grillé',kcal100:208},{name:'Thon naturel',kcal100:116},{name:'Cabillaud',kcal100:82},
+  {name:'Sardine grillée',kcal100:208},{name:'Crevettes cuites',kcal100:99},{name:'Maquereau',kcal100:205},
+  {name:'Œuf entier',kcal100:155},{name:"Blanc d'œuf",kcal100:52},{name:'Yaourt nature',kcal100:59},
+  {name:'Yaourt grec',kcal100:97},{name:'Fromage blanc 0%',kcal100:45},{name:'Lait entier',kcal100:61},
+  {name:'Riz blanc cuit',kcal100:130},{name:'Riz basmati cuit',kcal100:121},{name:'Couscous cuit ✅',kcal100:112},
+  {name:'Semoule cuite ✅',kcal100:112},{name:'Pâtes cuites',kcal100:131},{name:'Pain blanc',kcal100:265},
+  {name:'Baguette',kcal100:270},{name:'Pain pita ✅',kcal100:275},{name:'Khobz marocain ✅',kcal100:265},
+  {name:'Msemen ✅',kcal100:310},{name:'Batbout ✅',kcal100:268},{name:'Pomme de terre cuite',kcal100:77},
+  {name:'Patate douce',kcal100:90},{name:'Quinoa',kcal100:120},{name:"Flocons d'avoine",kcal100:368},
+  {name:'Lentilles cuites ✅',kcal100:116},{name:'Pois chiches cuits ✅',kcal100:164},{name:'Haricots rouges ✅',kcal100:127},
+  {name:'Fèves cuites ✅',kcal100:110},{name:'Tomate',kcal100:18},{name:'Concombre',kcal100:15},
+  {name:'Carotte',kcal100:41},{name:'Brocoli',kcal100:34},{name:'Épinards',kcal100:23},
+  {name:'Courgette',kcal100:17},{name:'Aubergine',kcal100:25},{name:'Oignon',kcal100:40},
+  {name:'Banane',kcal100:89},{name:'Pomme',kcal100:52},{name:'Orange',kcal100:47},
+  {name:'Datte ✅',kcal100:282},{name:'Figue fraîche',kcal100:74},{name:'Figue sèche',kcal100:249},
+  {name:'Grenade',kcal100:83},{name:'Mangue',kcal100:60},{name:'Avocat',kcal100:160},
+  {name:'Amandes',kcal100:579},{name:'Noix de cajou',kcal100:553},{name:'Pistaches',kcal100:562},
+  {name:"Huile d'olive",kcal100:884},{name:'Miel ✅',kcal100:304},{name:'Tahini ✅',kcal100:595},
+  {name:'Harissa ✅',kcal100:50},{name:'Chermoula ✅',kcal100:120},
+  {name:'Couscous poulet ✅',kcal100:110},{name:'Tajine poulet ✅',kcal100:118},{name:'Tajine agneau ✅',kcal100:165},
+  {name:'Maklouba ✅',kcal100:155},{name:'Chwarma poulet ✅',kcal100:220},{name:'Falafel ✅',kcal100:333},
+  {name:'Hummus ✅',kcal100:177},{name:'Harira ✅',kcal100:68},{name:'Chorba ✅',kcal100:72},
+  {name:'Rfissa ✅',kcal100:175},{name:'Shakshuka ✅',kcal100:95},{name:'Ful medames ✅',kcal100:110},
+  {name:'Kebab halal ✅',kcal100:218},{name:'Pastilla poulet ✅',kcal100:265},
+  {name:'Baklava ✅',kcal100:428},{name:'Chebakia ✅',kcal100:450},{name:'Makroud ✅',kcal100:390},
+  {name:'Knafeh',kcal100:384},{name:'Sellou ✅',kcal100:490},
+  {name:'Chocolat noir 70%',kcal100:598},{name:'Nutella',kcal100:539},{name:'Chips',kcal100:536},
+  {name:"Jus d'orange",kcal100:45},{name:'Coca-Cola',kcal100:42},{name:'Coca Zero',kcal100:1},
+  {name:'Thé à la menthe ✅',kcal100:8},{name:'Thé sans sucre',kcal100:1},{name:'Café sans sucre',kcal100:2},
+  {name:'Lait chocolaté',kcal100:70},{name:'Pizza margherita',kcal100:266},{name:'Tacos poulet',kcal100:210},
+  {name:'Hamburger halal ✅',kcal100:295},{name:'Croissant',kcal100:406},{name:'Pain au chocolat',kcal100:395},
+  {name:'Ratatouille',kcal100:60},{name:'Gratin dauphinois',kcal100:165},
+];
 
 let selectedFood = null;
 
@@ -1166,14 +930,11 @@ function searchFood() {
   document.getElementById('cal-name').value = '';
   document.getElementById('cal-kcal').value = '';
   document.getElementById('cal-kcal-display').textContent = '— kcal';
-
-  if (query.length < 2) { box.style.display = 'none'; return; }
-
-  const results = foodDB.filter(f => f.name.toLowerCase().includes(query)).slice(0, 6);
-  if (results.length === 0) { box.style.display = 'none'; return; }
-
-  box.innerHTML = results.map((f, i) => `
-    <div onclick="selectFood(${i})" data-idx="${i}" style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;"
+  if (query.length < 2) { box.style.display='none'; return; }
+  const results = foodDB.filter(f => f.name.toLowerCase().includes(query)).slice(0,7);
+  if (!results.length) { box.style.display='none'; return; }
+  box.innerHTML = results.map((f,i) => `
+    <div onclick="selectFood(${i})" style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;"
       onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
       <span>${f.name}</span>
       <span style="color:var(--muted);font-size:11px">${f.kcal100} kcal/100g</span>
@@ -1195,65 +956,51 @@ function selectFood(idx) {
 function calcKcalFromGrams() {
   if (!selectedFood) return;
   const g = parseFloat(document.getElementById('cal-grams').value);
-  if (!g || g <= 0) { document.getElementById('cal-kcal-display').textContent = '— kcal'; document.getElementById('cal-kcal').value = ''; return; }
+  if (!g || g<=0) { document.getElementById('cal-kcal-display').textContent='— kcal'; document.getElementById('cal-kcal').value=''; return; }
   const kcal = Math.round((selectedFood.kcal100 * g) / 100);
   document.getElementById('cal-kcal-display').textContent = kcal + ' kcal';
   document.getElementById('cal-kcal').value = kcal;
 }
 
-// Close suggestions on outside click
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('#cal-search') && !e.target.closest('#food-suggestions')) {
+document.addEventListener('click', e => {
+  if (!e.target.closest('#cal-search') && !e.target.closest('#food-suggestions'))
     document.getElementById('food-suggestions').style.display = 'none';
-  }
 });
 
-// CALORIES
+// ── MAIN FUNCTIONS ──
 function addCal() {
   const name = document.getElementById('cal-name').value.trim();
   const kcal = parseInt(document.getElementById('cal-kcal').value);
   const type = document.getElementById('cal-type').value;
   const grams = document.getElementById('cal-grams').value;
-  if (!name || !kcal) { showToast('⚠️ Sélectionne un aliment et entre le grammage'); return; }
+  if (!name || !kcal) { showToast('⚠️ Sélectionne un aliment'); return; }
   const displayName = grams ? `${name} (${grams}g)` : name;
-  getToday().cal.push({ name: displayName, kcal, type, time: now() });
-  document.getElementById('cal-search').value = '';
-  document.getElementById('cal-grams').value = '';
-  document.getElementById('cal-kcal').value = '';
-  document.getElementById('cal-name').value = '';
+  getToday().cal.push({ name:displayName, kcal, type, time:now() });
+  ['cal-search','cal-grams','cal-kcal','cal-name'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('cal-kcal-display').textContent = '— kcal';
   selectedFood = null;
-  save();
-  updateAll();
-  showToast(`+${kcal} kcal ajoutées`);
+  save(); updateAll();
+  showToast(`+${kcal} kcal`);
 }
 
-// SPORT
 function addSport() {
   const type = document.getElementById('sport-type').value;
   const min = parseInt(document.getElementById('sport-min').value);
   if (!min) return;
-  getToday().sport.push({ type, min, time: now() });
+  getToday().sport.push({ type, min, time:now() });
   document.getElementById('sport-min').value = '';
-  save();
-  updateAll();
+  save(); updateAll();
   showToast(`${min} min ajoutées`);
 }
 
-// WATER
 function addWater(glasses) {
   const goal = parseInt(localStorage.getItem('waterGoal') || '8');
   getToday().water = Math.min(goal + 2, getToday().water + glasses);
-  save();
-  updateAll();
-  showToast(`+${glasses} verre${glasses>1?'s':''} !`);
+  save(); updateAll();
+  showToast(`+${glasses} verre${glasses>1?'s':''}`);
 }
 
-function resetWater() {
-  getToday().water = 0;
-  save();
-  updateAll();
-}
+function resetWater() { getToday().water = 0; save(); updateAll(); }
 
 function setWaterGoal() {
   const v = parseInt(document.getElementById('water-goal-inp').value);
@@ -1263,49 +1010,113 @@ function setWaterGoal() {
 function renderWaterDrops() {
   const goal = parseInt(localStorage.getItem('waterGoal') || '8');
   const current = getToday().water;
-  const container = document.getElementById('water-drops');
-  if (!container) return;
-  container.innerHTML = Array.from({length: goal}, (_, i) =>
-    `<div class="water-drop ${i < current ? 'filled' : ''}">💧</div>`
-  ).join('');
+  const c = document.getElementById('water-drops');
+  if (!c) return;
+  c.innerHTML = Array.from({length:goal},(_,i) => `<div class="water-drop ${i<current?'filled':''}">💧</div>`).join('');
 }
 
-// SLEEP
 function updateSleepSlider() {
   const val = parseFloat(document.getElementById('sleep-slider').value);
   document.getElementById('sleep-slider-val').textContent = val + 'h';
-  const emoji = val >= 8 ? '😴' : val >= 7 ? '😊' : val >= 5 ? '😐' : '😩';
+  const emoji = val>=8?'😴':val>=7?'😊':val>=5?'😐':'😩';
   document.getElementById('sleep-emoji-display').textContent = emoji;
 }
 
 function saveSleep() {
   const val = parseFloat(document.getElementById('sleep-slider').value);
   getToday().sleep = val;
-  // Add to sleep log
   if (!state.sleepLog) state.sleepLog = [];
   state.sleepLog = state.sleepLog.filter(x => x.date !== todayKey);
-  state.sleepLog.unshift({ date: todayKey, hours: val });
-  save();
-  updateAll();
-  showToast(`${val}h de sommeil enregistrées`);
+  state.sleepLog.unshift({ date:todayKey, hours:val });
+  save(); updateAll();
+  showToast(`${val}h enregistrées`);
 }
 
-// RENDER LOGS
+function updateAll() {
+  const d = getToday();
+  const calGoal = parseInt(localStorage.getItem('calGoal') || '2000');
+  const waterGoal = parseInt(localStorage.getItem('waterGoal') || '8');
+  const calTotal = d.cal.reduce((s,x) => s+x.kcal, 0);
+  const sportTotal = d.sport.reduce((s,x) => s+x.min, 0);
+  const prayerCount = getPrayerCount(d);
+  const ibadahScore = getIbadahScore(d);
+
+  // Quick stats
+  document.getElementById('qs-cal').textContent = calTotal;
+  document.getElementById('qs-cal-goal').textContent = calGoal;
+  document.getElementById('qs-sport').textContent = sportTotal;
+  document.getElementById('qs-water').textContent = d.water;
+  document.getElementById('qs-water-goal').textContent = waterGoal;
+  document.getElementById('qs-ibadah').textContent = prayerCount;
+
+  // Bars
+  document.getElementById('bar-cal').style.width = Math.min(100,(calTotal/calGoal)*100) + '%';
+  document.getElementById('bar-sport').style.width = Math.min(100,(sportTotal/60)*100) + '%';
+  document.getElementById('bar-water').style.width = Math.min(100,(d.water/waterGoal)*100) + '%';
+  document.getElementById('bar-ibadah').style.width = Math.min(100,(prayerCount/5)*100) + '%';
+
+  // Cal page
+  document.getElementById('cal-total').textContent = calTotal;
+  document.getElementById('cal-prog-bar').style.width = Math.min(100,(calTotal/calGoal)*100) + '%';
+  document.getElementById('cal-goal-label').textContent = `Objectif: ${calGoal} kcal`;
+  document.getElementById('cal-remaining').textContent = Math.max(0,calGoal-calTotal) + ' restantes';
+
+  // Sport page
+  document.getElementById('sport-total').textContent = sportTotal;
+  document.getElementById('sport-kcal-burned').textContent = Math.round(sportTotal*7);
+
+  // Water page
+  document.getElementById('water-count').textContent = d.water;
+  document.getElementById('water-goal-disp').textContent = waterGoal;
+  document.getElementById('water-ml').textContent = (d.water*250) + ' ml';
+
+  // Sleep
+  document.getElementById('sleep-display').textContent = d.sleep ? d.sleep+'h' : '-';
+  if (d.sleep) {
+    const q = d.sleep>=7?'😊 Bon sommeil':d.sleep>=5?'😐 Sommeil moyen':'😩 Insuffisant';
+    document.getElementById('sleep-quality-disp').textContent = q;
+  }
+
+  // Ibadah
+  const ibEl = document.getElementById('ibadah-score-big');
+  if (ibEl) ibEl.textContent = ibadahScore;
+
+  // Score (inclut ibadah)
+  let score = 0;
+  if (calTotal > 0) score += 20;
+  if (sportTotal >= 30) score += 20;
+  else if (sportTotal > 0) score += 10;
+  if (d.water >= waterGoal) score += 20;
+  else if (d.water > 0) score += Math.round((d.water/waterGoal)*20);
+  if (d.sleep >= 7) score += 20;
+  else if (d.sleep) score += 10;
+  score += Math.round((prayerCount/5)*20); // 20pts pour les 5 prières
+
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('scoreRing').style.strokeDashoffset = 207 - (score/100)*207;
+
+  const titles = ['Commence ta journée !','Continue comme ça 👍','Bonne progression 💪','Presque parfait 🌟','Journée bénie 🤲'];
+  const subs = ['Ajoute tes activités','Tu es sur la bonne voie','Plus que quelques efforts','Encore un petit effort','Toutes tes ibadah accomplies !'];
+  const idx = Math.floor(score/25);
+  document.getElementById('scoreTitle').textContent = titles[Math.min(idx,4)];
+  document.getElementById('scoreSub').textContent = subs[Math.min(idx,4)];
+
+  renderLogs();
+  renderWaterDrops();
+  renderRecent();
+  updateRamadanBanner();
+}
+
 function renderLogs() {
   const d = getToday();
-
-  // Cal log
   const calLog = document.getElementById('cal-log');
   if (calLog) {
-    calLog.innerHTML = d.cal.length === 0 ? '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Aucun repas enregistré</div>' :
-      [...d.cal].reverse().map((item, i) => `
+    calLog.innerHTML = d.cal.length===0
+      ? '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Aucun repas enregistré</div>'
+      : [...d.cal].reverse().map((item,i) => `
         <div class="log-item">
-          <div class="log-left">
-            <div class="log-dot" style="background:var(--cal)"></div>
-            <div>
-              <div class="log-name">${item.name} <span style="font-size:11px;color:var(--muted)">(${item.type})</span></div>
-              <div class="log-time">${item.time}</div>
-            </div>
+          <div class="log-left"><div class="log-dot" style="background:var(--cal)"></div>
+            <div><div class="log-name">${item.name} <span style="font-size:11px;color:var(--muted)">(${item.type})</span></div><div class="log-time">${item.time}</div></div>
           </div>
           <div style="display:flex;align-items:center;gap:8px">
             <div class="log-val" style="color:var(--cal)">${item.kcal} kcal</div>
@@ -1313,19 +1124,14 @@ function renderLogs() {
           </div>
         </div>`).join('');
   }
-
-  // Sport log
   const sportLog = document.getElementById('sport-log');
   if (sportLog) {
-    sportLog.innerHTML = d.sport.length === 0 ? '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Aucune séance enregistrée</div>' :
-      [...d.sport].reverse().map((item, i) => `
+    sportLog.innerHTML = d.sport.length===0
+      ? '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Aucune séance enregistrée</div>'
+      : [...d.sport].reverse().map((item,i) => `
         <div class="log-item">
-          <div class="log-left">
-            <div class="log-dot" style="background:var(--sport)"></div>
-            <div>
-              <div class="log-name">${item.type}</div>
-              <div class="log-time">${item.time}</div>
-            </div>
+          <div class="log-left"><div class="log-dot" style="background:var(--sport)"></div>
+            <div><div class="log-name">${item.type}</div><div class="log-time">${item.time}</div></div>
           </div>
           <div style="display:flex;align-items:center;gap:8px">
             <div class="log-val" style="color:var(--sport)">${item.min} min</div>
@@ -1333,18 +1139,11 @@ function renderLogs() {
           </div>
         </div>`).join('');
   }
-
-  // Sleep log
   const sleepLog = document.getElementById('sleep-log');
   if (sleepLog && state.sleepLog) {
-    sleepLog.innerHTML = state.sleepLog.slice(0, 7).map(item => `
+    sleepLog.innerHTML = state.sleepLog.slice(0,7).map(item => `
       <div class="log-item">
-        <div class="log-left">
-          <div class="log-dot" style="background:var(--sleep)"></div>
-          <div>
-            <div class="log-name">${formatDate(item.date)}</div>
-          </div>
-        </div>
+        <div class="log-left"><div class="log-dot" style="background:var(--sleep)"></div><div><div class="log-name">${formatDate(item.date)}</div></div></div>
         <div class="log-val" style="color:var(--sleep)">${item.hours}h</div>
       </div>`).join('');
   }
@@ -1353,61 +1152,254 @@ function renderLogs() {
 function renderRecent() {
   const d = getToday();
   const items = [];
-  d.cal.forEach(x => items.push({ icon: '🔥', text: x.name, val: x.kcal + ' kcal', color: 'var(--cal)', time: x.time }));
-  d.sport.forEach(x => items.push({ icon: '💪', text: x.type, val: x.min + ' min', color: 'var(--sport)', time: x.time }));
-  if (d.sleep) items.push({ icon: '😴', text: 'Sommeil', val: d.sleep + 'h', color: 'var(--sleep)', time: '' });
-
+  d.cal.forEach(x => items.push({icon:'🔥',text:x.name,val:x.kcal+' kcal',color:'var(--cal)',time:x.time}));
+  d.sport.forEach(x => items.push({icon:'💪',text:x.type,val:x.min+' min',color:'var(--sport)',time:x.time}));
+  if (d.sleep) items.push({icon:'😴',text:'Sommeil',val:d.sleep+'h',color:'var(--sleep)',time:''});
+  const pCount = getPrayerCount(d);
+  if (pCount > 0) items.push({icon:'🕌',text:`${pCount} prière${pCount>1?'s':''} accomplies`,val:getIbadahScore(d)+' pts',color:'var(--islam)',time:''});
   const el = document.getElementById('recent-list');
   if (!el) return;
-  if (items.length === 0) {
-    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Aucune activité aujourd\'hui</div>';
-    return;
-  }
-
+  if (!items.length) { el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Aucune activité aujourd\'hui</div>'; return; }
   el.innerHTML = items.slice(-5).reverse().map(item => `
     <div class="log-item" style="margin-bottom:6px">
-      <div class="log-left">
-        <span style="font-size:18px">${item.icon}</span>
-        <div>
-          <div class="log-name">${item.text}</div>
-          ${item.time ? `<div class="log-time">${item.time}</div>` : ''}
-        </div>
+      <div class="log-left"><span style="font-size:18px">${item.icon}</span>
+        <div><div class="log-name">${item.text}</div>${item.time?`<div class="log-time">${item.time}</div>`:''}</div>
       </div>
       <div class="log-val" style="color:${item.color}">${item.val}</div>
     </div>`).join('');
 }
 
-function delCal(i) { getToday().cal.splice(i, 1); save(); updateAll(); }
-function delSport(i) { getToday().sport.splice(i, 1); save(); updateAll(); }
+function delCal(i) { getToday().cal.splice(i,1); save(); updateAll(); }
+function delSport(i) { getToday().sport.splice(i,1); save(); updateAll(); }
 
-// UTILS
+// ── BILAN ──
+function getLastNDays(n) {
+  const days = [];
+  for (let i=n-1; i>=0; i--) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const key = d.toISOString().split('T')[0];
+    const dd = state[key] || {cal:[],sport:[],water:0,sleep:null,ibadah:{},extra:{}};
+    days.push({
+      key, label: d.getDate()+'/'+(d.getMonth()+1),
+      cal: (dd.cal||[]).reduce((s,x)=>s+x.kcal,0),
+      sport: (dd.sport||[]).reduce((s,x)=>s+x.min,0),
+      water: dd.water||0, sleep: dd.sleep||0,
+      ibadah: getIbadahScore(dd),
+      prayers: getPrayerCount(dd),
+    });
+  }
+  return days;
+}
+
+function setBilanPeriod(n, el) {
+  bilanPeriod = n;
+  document.querySelectorAll('.bilan-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderBilan();
+}
+
+function drawChart(canvasId, data, colorKey, goalVal) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.parentElement.offsetWidth - 32 || 300;
+  const H = 120;
+  canvas.width = W*(window.devicePixelRatio||1);
+  canvas.height = H*(window.devicePixelRatio||1);
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  ctx.scale(window.devicePixelRatio||1, window.devicePixelRatio||1);
+  ctx.clearRect(0,0,W,H);
+  const colorMap = {cal:[249,115,22],sport:[74,222,128],water:[56,189,248],sleep:[167,139,250],ibadah:[212,168,67]};
+  const rgb = colorMap[colorKey]||[74,222,128];
+  const max = Math.max(...data,goalVal||0,1);
+  const padT=10,padB=22,padL=4,padR=4,cw=W-padL-padR,ch=H-padT-padB;
+  const bw = Math.max(3,cw/data.length-3);
+  const step = cw/data.length;
+  if (goalVal) {
+    const gy = padT+ch-(goalVal/max)*ch;
+    ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(padL,gy); ctx.lineTo(W-padR,gy); ctx.stroke(); ctx.setLineDash([]);
+  }
+  data.forEach((val,i) => {
+    const x = padL+i*step+step/2-bw/2;
+    const bh = val>0?Math.max(4,(val/max)*ch):3;
+    const y = padT+ch-bh;
+    ctx.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${val>0?0.85:0.15})`;
+    ctx.beginPath();
+    if(ctx.roundRect) ctx.roundRect(x,y,bw,bh,[3,3,0,0]); else ctx.rect(x,y,bw,bh);
+    ctx.fill();
+  });
+  ctx.fillStyle='rgba(74,85,104,0.9)'; ctx.font='9px DM Sans'; ctx.textAlign='center';
+  const ls = Math.ceil(data.length/7);
+  data.forEach((val,i) => {
+    if(i%ls===0||i===data.length-1) {
+      const d=new Date(); d.setDate(d.getDate()-(data.length-1-i));
+      ctx.fillText(d.getDate()+'/'+(d.getMonth()+1),padL+i*step+step/2,H-5);
+    }
+  });
+}
+
+function renderBilan() {
+  const days = getLastNDays(bilanPeriod);
+  const dwd = days.filter(d=>d.cal>0||d.sport>0||d.water>0||d.sleep>0||d.prayers>0);
+  const n = dwd.length||1;
+  const calGoal=parseInt(localStorage.getItem('calGoal')||'2000');
+  const waterGoal=parseInt(localStorage.getItem('waterGoal')||'8');
+  const avgCal=Math.round(dwd.reduce((s,d)=>s+d.cal,0)/n);
+  const avgSport=Math.round(dwd.reduce((s,d)=>s+d.sport,0)/n);
+  const avgWater=(dwd.reduce((s,d)=>s+d.water,0)/n).toFixed(1);
+  const sdays=dwd.filter(d=>d.sleep>0);
+  const avgSleep=sdays.length?(sdays.reduce((s,d)=>s+d.sleep,0)/sdays.length).toFixed(1):null;
+  const sportDays=dwd.filter(d=>d.sport>0).length;
+  const avgPrayers=(dwd.reduce((s,d)=>s+d.prayers,0)/n).toFixed(1);
+
+  ['cal','sport','water','sleep','ibadah'].forEach(k => {
+    const el=document.getElementById('chart-period-'+k); if(el) el.textContent=bilanPeriod;
+  });
+
+  document.getElementById('bilan-summary').innerHTML = `
+    <div class="stat-sum-card"><div class="stat-sum-val" style="color:var(--cal)">${avgCal||'—'}</div><div class="stat-sum-label">Moy. kcal/jour</div></div>
+    <div class="stat-sum-card"><div class="stat-sum-val" style="color:var(--sport)">${avgSport||'—'} min</div><div class="stat-sum-label">Moy. sport/jour</div></div>
+    <div class="stat-sum-card"><div class="stat-sum-val" style="color:var(--water)">${avgWater}</div><div class="stat-sum-label">Moy. verres/jour</div></div>
+    <div class="stat-sum-card"><div class="stat-sum-val" style="color:var(--islam)">${avgPrayers}/5</div><div class="stat-sum-label">Moy. prières/jour</div></div>
+  `;
+
+  setTimeout(()=>{
+    drawChart('chart-cal',days.map(d=>d.cal),'cal',calGoal);
+    drawChart('chart-sport',days.map(d=>d.sport),'sport',30);
+    drawChart('chart-water',days.map(d=>d.water),'water',waterGoal);
+    drawChart('chart-sleep',days.map(d=>d.sleep),'sleep',8);
+    drawChart('chart-ibadah',days.map(d=>d.ibadah),'ibadah',85);
+  },60);
+
+  // Medical + spiritual conclusions
+  const conclusions = [];
+  const avgSleepNum = avgSleep?parseFloat(avgSleep):null;
+  const avgWaterNum = parseFloat(avgWater);
+  const avgCalNum = avgCal||0;
+  const avgPrayersNum = parseFloat(avgPrayers);
+
+  // Prières
+  if (dwd.length > 0) {
+    if (avgPrayersNum >= 4.5)
+      conclusions.push({level:'islam-ok',icon:'🕌',title:'Excellente régularité dans la prière',text:`Moyenne de ${avgPrayers}/5 prières par jour. La prière régulière est scientifiquement associée à une réduction du stress et de l'anxiété, une meilleure régulation du cortisol et un sentiment de paix intérieure. Scientifiquement, la prosternation (sujud) améliore la circulation cérébrale.`});
+    else if (avgPrayersNum >= 3)
+      conclusions.push({level:'warn',icon:'🕌',title:'Prières à renforcer',text:`Moyenne de ${avgPrayers}/5 prières/jour. Les prières manquées représentent une perte spirituelle et physique — le mouvement de la salat est un exercice doux bénéfique pour la colonne vertébrale et les articulations. Essaie de ne pas manquer Fajr et Maghrib minimum.`});
+    else
+      conclusions.push({level:'danger',icon:'🕌',title:'Très peu de prières accomplies',text:`Moyenne de ${avgPrayers}/5 par jour sur la période. Commence par une prière par jour, puis deux. La prière est le pilier de la dîn — ibn Qayyim dit qu'elle est à la religion ce que la tête est au corps. La régularité progressive est préférable à l'abandon total.`});
+  }
+
+  // Sommeil
+  if (avgSleepNum) {
+    if (avgSleepNum < 6)
+      conclusions.push({level:'danger',icon:'🧠',title:'Manque de sommeil sévère',text:`Moyenne ${avgSleepNum}h/nuit. Moins de 6h augmente le risque cardiovasculaire de 48%, provoque une résistance à l'insuline et perturbe les hormones. Note que la prière de Fajr à l'aube est une opportunité de réguler ton cycle circadien naturellement en te levant tôt.`});
+    else if (avgSleepNum < 7)
+      conclusions.push({level:'warn',icon:'😴',title:'Sommeil insuffisant',text:`${avgSleepNum}h/nuit. Entre 6-7h : performances cognitives réduites, immunité affaiblie. Le Prophète ﷺ recommandait de dormir tôt après Isha pour se lever pour Fajr — ce rythme correspond au cycle circadien optimal.`});
+    else
+      conclusions.push({level:'ok',icon:'😊',title:'Sommeil optimal',text:`Excellente moyenne de ${avgSleepNum}h/nuit. Dormir après Isha et se lever pour Fajr est la routine recommandée — elle correspond exactement aux recommandations de chrono-médecine moderne pour la santé cardiaque et métabolique.`});
+  }
+
+  // Hydratation
+  if (avgWaterNum > 0) {
+    const ml = Math.round(avgWaterNum*250);
+    if (avgWaterNum < 4)
+      conclusions.push({level:'danger',icon:'🚨',title:'Déshydratation chronique',text:`${ml}ml/jour. Risque de calculs rénaux x4, performances cognitives -20%. Si tu jeûnes, concentre tes apports entre Maghreb et Fajr pour atteindre 2L dans cette fenêtre.`});
+    else if (avgWaterNum < 6)
+      conclusions.push({level:'warn',icon:'💧',title:'Hydratation insuffisante',text:`${ml}ml/jour. Vise 2L/jour (8 verres). En dehors du Ramadan, rappelle-toi que l'eau est mentionnée dans le Coran comme signe de miséricorde divine — prends soin de ton corps qui est une amâna.`});
+    else
+      conclusions.push({level:'ok',icon:'💧',title:'Bonne hydratation',text:`${ml}ml/jour, excellent ! Ton corps fonctionne de façon optimale. Continue ainsi.`});
+  }
+
+  // Calories
+  if (avgCalNum > 0) {
+    const deficit = calGoal - avgCalNum;
+    if (deficit > 800)
+      conclusions.push({level:'danger',icon:'⚠️',title:'Déficit calorique dangereux',text:`Déficit de ${deficit} kcal/jour. L'organisme brûle du muscle, le métabolisme ralentit. Le Prophète ﷺ disait : "Nul homme ne remplit de récipient pire que son ventre" mais aussi que le corps a des droits sur toi. Mange suffisamment pour avoir l'énergie d'adorer Allah.`});
+    else if (deficit > 400)
+      conclusions.push({level:'warn',icon:'🔥',title:'Déficit calorique modéré',text:`Déficit de ${deficit} kcal/jour. Acceptable pour une perte de poids progressive. Assure-toi d'avoir assez d'énergie pour tes prières et activités quotidiennes.`});
+    else if (deficit > -300)
+      conclusions.push({level:'ok',icon:'✅',title:'Apports caloriques équilibrés',text:`Tes apports (${avgCalNum} kcal) sont proches de l'objectif. Ton corps a l'énergie nécessaire pour tes activités et tes ibadah. Le juste milieu (wasatiyya) dans l'alimentation est recommandé en Islam.`});
+    else
+      conclusions.push({level:'warn',icon:'📈',title:'Excès calorique régulier',text:`Surplus de ${-deficit} kcal/jour. Le Coran recommande de ne pas dépasser les limites (Israf) — cela s'applique à la nourriture. Un surplus continu favorise le surpoids et les maladies métaboliques qui peuvent réduire ta capacité à adorer Allah pleinement.`});
+  }
+
+  // Sport
+  if (dwd.length > 0) {
+    const sportFreq = (sportDays/bilanPeriod)*7;
+    if (sportDays===0)
+      conclusions.push({level:'danger',icon:'🏃',title:'Sédentarité détectée',text:`Aucune activité sur la période. La sédentarité augmente de 49% le risque cardiovasculaire. Ibn al-Qayyim écrit dans Zad al-Ma'ad sur l'importance du mouvement du corps pour la santé. Commence par une marche de 20 min après Asr ou Maghreb.`});
+    else if (avgSport >= 30 && sportFreq >= 3)
+      conclusions.push({level:'ok',icon:'🏅',title:'Activité physique excellente',text:`${sportDays} jours actifs, ${avgSport} min/jour. Tu atteins les recommandations OMS. Le corps sain te permet de faire tes prières avec concentration et de remplir tes obligations.`});
+    else
+      conclusions.push({level:'warn',icon:'💪',title:'Activité physique à améliorer',text:`${sportDays} jour(s) actif(s), ${avgSport} min/jour. Vise 30 min/jour sur 4-5 jours. La marche après les prières est une sunnah indirecte — profite des moments entre Asr et Maghreb pour bouger.`});
+  }
+
+  const el = document.getElementById('medical-conclusions');
+  if (!conclusions.length) { el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Enregistre tes données pour obtenir une analyse.</div>'; return; }
+  el.innerHTML = conclusions.map(c => `
+    <div class="medical-card ${c.level}">
+      <div class="medical-icon">${c.icon}</div>
+      <div><div class="medical-title">${c.title}</div><div class="medical-text">${c.text}</div></div>
+    </div>`).join('');
+}
+
+// ── UTILS ──
 function now() {
-  const d = new Date();
-  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  const d=new Date();
+  return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
 }
-
 function formatDate(str) {
-  const d = new Date(str);
-  const days = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  return days[d.getDay()] + ' ' + d.getDate();
+  const d=new Date(str);
+  return ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'][d.getDay()]+' '+d.getDate();
 }
-
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = '✓ ' + msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
 }
 
-// TAB SWITCHING
 function switchTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  const navMap = { home: 0, calories: 1, sport: 2, water: 3, sleep: 4 };
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  const navMap={home:0,calories:1,sport:2,water:3,ibadah:4,bilan:5};
   document.querySelectorAll('.nav-btn')[navMap[tab]].classList.add('active');
-  window.scrollTo(0, 0);
+  window.scrollTo(0,0);
   updateAll();
+  if(tab==='ibadah') renderPrayerChecklist();
+  if(tab==='bilan') renderBilan();
+}
+
+// ── INIT ──
+function init() {
+  const d=new Date();
+  const days=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months=['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
+  const dateStr=`${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+  document.querySelectorAll('#dateDisplay,#cal-date,#ibadah-date').forEach(el=>el&&(el.textContent=dateStr));
+  const h=d.getHours();
+  const greet=h<12?'السلام عليكم 🌅':h<18?'مرحباً ☀️':'مساء الخير 🌙';
+  const el=document.getElementById('greeting');
+  if(el) el.textContent=greet+' — '+dateStr;
+
+  // Restore settings
+  const city=getCity();
+  const cityEl=document.getElementById('city-select');
+  if(cityEl) cityEl.value=city;
+  const isRamadan=localStorage.getItem('ramadan-mode')==='1';
+  const ramEl=document.getElementById('toggle-ramadan');
+  if(ramEl) ramEl.checked=isRamadan;
+
+  loadPrayerTimes();
+  updateAll();
+  renderWaterDrops();
+  updateSleepSlider();
+
+  // Update prayer countdown every minute
+  setInterval(()=>{
+    renderPrayerBanner();
+    updateRamadanBanner();
+  }, 60000);
 }
 
 init();
